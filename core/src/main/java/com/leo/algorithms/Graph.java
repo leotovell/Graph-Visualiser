@@ -45,16 +45,17 @@ public class Graph {
 	public void addEdge(String source, String destination, Integer weight) {
 		boolean startFailed = false;
 		boolean endFailed = false;
+		int callersLineNumber = new Exception().getStackTrace()[1].getLineNumber();
 		Vertex start = findVertex(source);
 		if(Objects.isNull(start)) {
 			startFailed = true;
 		}
 		Vertex end = findVertex(destination);
 		if(Objects.isNull(end)) {
-			endFailed = true;
+			endFailed = true;			
 		}
-		if(startFailed) System.out.println("Source vertex: " + source + ", not found. Edge not added.");
-		if(endFailed) System.out.println("Destination vertex: " + destination + ", not found. Edge not added.");
+		if(startFailed) System.out.println("Source vertex: " + source + ", not found. Edge not added. | Line: " + callersLineNumber);
+		if(endFailed) System.out.println("Destination vertex: " + destination + ", not found. Edge not added. | Line: " + callersLineNumber);
 		if(!(startFailed) & !(endFailed)) {
 			start.addEdge(end, weight);
 		}

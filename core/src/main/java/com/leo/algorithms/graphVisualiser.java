@@ -35,18 +35,42 @@ public class graphVisualiser extends ApplicationAdapter {
 	private TextureRegion myTextureRegion;
 	private TextureRegionDrawable myTextRegionDrawable;
 	private ImageButton button;
+	private Random r;
 	
 	
 	public Graph createGraph(Random r) {
 		graph = new Graph("My Graph");
+		
+		/*
+		
+		graph.addVertex("a");
+		graph.addVertex("b");
+		graph.addVertex("c");
+		graph.addVertex("d");
 		graph.addVertex("1");
 		graph.addVertex("2");
-		graph.addVertex("e");
-		graph.addVertex("7");
-		graph.addEdge("7", "e", 5);
-		graph.addEdge("2", "7", 4);
-		graph.addEdge("7", "1", 9);
-		graph.addEdge("1", "2", 3);
+		graph.addVertex("3");
+		graph.addVertex("4");
+		
+		graph.addEdge("a", "b", 10);
+		graph.addEdge("b", "c", 9);
+		graph.addEdge("c", "d", 8);
+		graph.addEdge("a", "3", 12);
+		graph.addEdge("c", "2", 10);
+		graph.addEdge("c", "1", 10);
+		graph.addEdge("3", "4", 10);
+		graph.addEdge("d", "3", 10);
+		
+		*/
+		
+		graph.addVertex("1");
+		graph.addVertex("2");
+		graph.addVertex("3");
+		
+		graph.addEdge("1", "2", 10);
+		graph.addEdge("2", "3", 10);
+		graph.addEdge("3", "1", 2);
+		graph.addEdge("1", "d", 10);
 		
 		for(Vertex vertex: graph.getVertexes()) {
 			int x = r.nextInt(0, WINDOW_WIDTH);
@@ -85,7 +109,7 @@ public class graphVisualiser extends ApplicationAdapter {
 	@Override
 	public void create() {
 		
-		Random r = new Random();
+		r = new Random();
 		WINDOW_WIDTH = Gdx.graphics.getWidth();
 		WINDOW_HEIGHT = Gdx.graphics.getHeight();
 		font = new BitmapFont();
@@ -123,7 +147,8 @@ public class graphVisualiser extends ApplicationAdapter {
 
 	@Override
 	public void render() {
-		if(Gdx.input.isKeyJustPressed(Keys.Q)) Gdx.app.exit();		
+		if(Gdx.input.isKeyJustPressed(Keys.Q)) Gdx.app.exit();
+		if(Gdx.input.isKeyJustPressed(Keys.SPACE)) graph = createGraph(r);
 		ScreenUtils.clear(Color.BLACK);
 		
 		for(Vertex vertex: graph.getVertexes()) {
@@ -137,7 +162,6 @@ public class graphVisualiser extends ApplicationAdapter {
 		
 		stage.act(Gdx.graphics.getDeltaTime());
 		stage.draw();
-		
 		
 	}
 

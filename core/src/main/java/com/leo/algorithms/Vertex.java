@@ -86,10 +86,8 @@ public class Vertex {
 		batch.begin();
 		font.draw(batch, text, fontX, fontY);
 		batch.end();
-		
-		
-		
-		System.out.println("X: " + this.x + ", Y: " + this.y);
+				
+		//System.out.println("X: " + this.x + ", Y: " + this.y);
 	}
 
 
