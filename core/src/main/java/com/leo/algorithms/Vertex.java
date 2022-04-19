@@ -3,19 +3,25 @@ package com.leo.algorithms;
 import java.util.ArrayList;
 import java.util.Objects;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 
+
 public class Vertex {
 
+	private int positionSinceLastMoved;
 	private String name = null;
 	private ArrayList<Edge> edgeList;
 	private int x,y,radius;
+	private int originalX = 0, originalY = 0;
+	private float mouseX, mouseY;
+	private boolean moving;
 	
 	public Vertex(String name) {
 		this.edgeList = new ArrayList<>();
@@ -89,6 +95,25 @@ public class Vertex {
 				
 		//System.out.println("X: " + this.x + ", Y: " + this.y);
 	}
-
-
+	
+	public void checkDragged() {
+		originalX = (int) mouseX;
+		originalY = (int) mouseY;
+		
+		mouseX = Gdx.input.getX();
+		mouseY = Gdx.graphics.getHeight() - Gdx.input.getY();
+	
+		int dx = (int) (mouseX - this.x);
+		int dy = (int) (mouseY - this.y);
+		int distance = (int) (Math.hypot(dx,  dy));
+		//System.out.println(distance);
+		
+		if(Gdx.input.isButtonPressed(Buttons.LEFT) & (distance < this.radius)) {
+			moving = true;
+			int changeX = (int) (originalX - mouseX);
+			int changeY = (int) (originalY - mouseY);
+			this.setX(x - changeX);
+			this.setY(y - changeY);
+		}
+	}
 }

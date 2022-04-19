@@ -41,7 +41,7 @@ public class graphVisualiser extends ApplicationAdapter {
 	public Graph createGraph(Random r) {
 		graph = new Graph("My Graph");
 		
-		/*
+		
 		
 		graph.addVertex("a");
 		graph.addVertex("b");
@@ -52,6 +52,10 @@ public class graphVisualiser extends ApplicationAdapter {
 		graph.addVertex("3");
 		graph.addVertex("4");
 		
+		for(int i = 0; i < 999999; i++) {
+			graph.addVertex(String.valueOf(i));
+		}
+		
 		graph.addEdge("a", "b", 10);
 		graph.addEdge("b", "c", 9);
 		graph.addEdge("c", "d", 8);
@@ -61,7 +65,7 @@ public class graphVisualiser extends ApplicationAdapter {
 		graph.addEdge("3", "4", 10);
 		graph.addEdge("d", "3", 10);
 		
-		*/
+		/*
 		
 		graph.addVertex("1");
 		graph.addVertex("2");
@@ -72,14 +76,17 @@ public class graphVisualiser extends ApplicationAdapter {
 		graph.addEdge("3", "1", 2);
 		graph.addEdge("1", "d", 10);
 		
+		*/
 		for(Vertex vertex: graph.getVertexes()) {
-			int x = r.nextInt(0, WINDOW_WIDTH);
-			int y = r.nextInt(0, WINDOW_HEIGHT);
+			int x = r.nextInt(WINDOW_WIDTH);
+			int y = r.nextInt(WINDOW_HEIGHT);
 			
+			/*
 			while(coordinatesCollide(x, y, vertex, graph)) {
-				x = r.nextInt(0, WINDOW_WIDTH);
-				y = r.nextInt(0, WINDOW_HEIGHT);
+				x = r.nextInt(WINDOW_WIDTH);
+				y = r.nextInt(WINDOW_HEIGHT);
 			}
+			*/
 			
 			vertex.setX(x);
 			vertex.setY(y);
@@ -157,6 +164,7 @@ public class graphVisualiser extends ApplicationAdapter {
 			}
 		}
 		for(Vertex vertex: graph.getVertexes()) {
+			vertex.checkDragged();
 			vertex.draw(sr, font, batch);
 		}
 		
