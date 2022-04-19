@@ -4,6 +4,10 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 
@@ -69,11 +73,21 @@ public class Vertex {
 		return xExists & yExists;
 	}
 	
-	public void draw(ShapeRenderer sr) {
+	public void draw(ShapeRenderer sr, BitmapFont font, Batch batch) {
 		sr.begin(ShapeType.Filled);
 		sr.setColor(Color.FIREBRICK);
 		sr.circle(this.x, this.y, this.radius);
 		sr.end();
+		
+		GlyphLayout text = new GlyphLayout(font, this.name);
+		float fontX = (this.x - (text.width /2));
+		float fontY = (this.y + (text.height /2));
+		
+		batch.begin();
+		font.draw(batch, text, fontX, fontY);
+		batch.end();
+		
+		
 		
 		System.out.println("X: " + this.x + ", Y: " + this.y);
 	}
