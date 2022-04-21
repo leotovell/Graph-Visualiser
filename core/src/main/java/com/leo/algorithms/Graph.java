@@ -3,6 +3,11 @@ package com.leo.algorithms;
 import java.util.ArrayList;
 import java.util.Objects;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField;
+
 public class Graph {
 
 	String name = "Graph";
@@ -22,6 +27,18 @@ public class Graph {
 		else {
 			System.out.println("Vertex with name: " + name + ", already exists, process aborted.");			
 		}
+	}
+	
+	public void addVertex(int x, int y, ArrayList<Actor> actors) {
+		for(Actor actor: actors) {
+			actor.setVisible(true);
+		}
+		
+		for(Actor actor: actors) {
+			actor.setVisible(false);
+		}
+		// Ask for weight;
+		
 	}
 	
 	public void removeVertex(Vertex vertex) {

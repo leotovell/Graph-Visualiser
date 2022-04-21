@@ -1,5 +1,6 @@
 package com.leo.algorithms;
 
+import java.util.ArrayList;
 import java.util.Random;
 
 import com.badlogic.gdx.ApplicationAdapter;
@@ -13,13 +14,22 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.scenes.scene2d.ui.Button.ButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.leo.algorithms.Assets.LButton;
 
 /** {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms. */
 public class graphVisualiser extends ApplicationAdapter {
@@ -34,8 +44,18 @@ public class graphVisualiser extends ApplicationAdapter {
 	private Texture myTexture;
 	private TextureRegion myTextureRegion;
 	private TextureRegionDrawable myTextRegionDrawable;
-	private ImageButton button;
+	private ImageButton retryButton;
+	private TextButtonStyle textButtonStyle;
+	private TextButton addVertex, removeVertex, removePath;
+	private TextField weightInputField;
+	private ArrayList<Actor> weightInputFields;
+	private ArrayList<LButton> editButtons;
 	private Random r;
+	private boolean addVertexToggle = false;
+	private boolean removeVertexToggle = false;
+	private boolean removeEdgeToggle = false;
+	private boolean addEdgeToggle = false;
+	private LButton addVertexButton, removeVertexButton, addEdgeButton, removeEdgeButton;
 	
 	
 	public Graph createGraph(Random r) {
@@ -52,7 +72,7 @@ public class graphVisualiser extends ApplicationAdapter {
 		graph.addVertex("3");
 		graph.addVertex("4");
 		
-		for(int i = 0; i < 999999; i++) {
+		for(int i = 0; i < 0; i++) {
 			graph.addVertex(String.valueOf(i));
 		}
 		
@@ -78,15 +98,15 @@ public class graphVisualiser extends ApplicationAdapter {
 		
 		*/
 		for(Vertex vertex: graph.getVertexes()) {
-			int x = r.nextInt(WINDOW_WIDTH);
-			int y = r.nextInt(WINDOW_HEIGHT);
+			int x = r.nextInt(WINDOW_WIDTH - 40) + 20;
+			int y = r.nextInt(WINDOW_HEIGHT - 80) + 60;
 			
-			/*
+			
 			while(coordinatesCollide(x, y, vertex, graph)) {
-				x = r.nextInt(WINDOW_WIDTH);
-				y = r.nextInt(WINDOW_HEIGHT);
+				x = r.nextInt(WINDOW_WIDTH - 40) + 20;
+				y = r.nextInt(WINDOW_HEIGHT - 80) + 60;
 			}
-			*/
+			
 			
 			vertex.setX(x);
 			vertex.setY(y);
@@ -125,30 +145,57 @@ public class graphVisualiser extends ApplicationAdapter {
 		
 		graph = createGraph(r);
 		
-		
 		sr = new ShapeRenderer();
 	
 		myTexture = new Texture(Gdx.files.internal("retry.png"));
 		myTextureRegion = new TextureRegion(myTexture);
 		myTextRegionDrawable = new TextureRegionDrawable(myTextureRegion);
-		button = new ImageButton(myTextRegionDrawable);
+		retryButton = new ImageButton(myTextRegionDrawable);
 		
-		button.setX(10);
-		button.setY(10);
+		retryButton.setX(10);
+		retryButton.setY(10);
 		
-		button.setWidth((float) (0.2 * button.getWidth()));
-		button.setHeight((float) (0.2 * button.getHeight()));
+		retryButton.setWidth((float) (0.2 * retryButton.getWidth()));
+		retryButton.setHeight((float) (30));
 		
-		button.addListener(new ClickListener() {
+		retryButton.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
 				graph = createGraph(r);
 			}
 		});
+		TextFieldStyle textFieldStyle = new TextFieldStyle();
+		textFieldStyle.font = font;
+		textFieldStyle.fontColor = Color.WHITE;
+		weightInputField = new TextField("sad", textFieldStyle);
+		weightInputField.setX(200);
+		weightInputField.setY(200);
+		weightInputField.setVisible(false);
+		
+		addVertexButton = new LButton("Add Vertex", Gdx.graphics.getWidth()-520, 10, 120, 30, Color.WHITE, ShapeType.Filled);
+		addVertexButton.setClickedColor(Color.GREEN);
+
+		addEdgeButton = new LButton("Add Edge", Gdx.graphics.getWidth()-390, 10, 120, 30, Color.WHITE, ShapeType.Filled);
+		addEdgeButton.setClickedColor(Color.GREEN);
+		
+		removeVertexButton = new LButton("Remove Vertex", Gdx.graphics.getWidth()-260, 10, 120, 30, Color.WHITE, ShapeType.Filled);
+		removeVertexButton.setClickedColor(Color.RED);
+		
+		removeEdgeButton = new LButton("Remove Edge", Gdx.graphics.getWidth()-130, 10, 120, 30, Color.WHITE, ShapeType.Filled);
+		removeEdgeButton.setClickedColor(Color.RED);
+		
+		editButtons = new ArrayList<>();
+		editButtons.add(addVertexButton);
+		editButtons.add(addEdgeButton);
+		editButtons.add(removeVertexButton);
+		editButtons.add(removeEdgeButton);
 		
 		stage = new Stage(new ScreenViewport());
-		stage.addActor(button);
+		stage.addActor(retryButton);
+		stage.addActor(weightInputField);
 		Gdx.input.setInputProcessor(stage);
+		weightInputFields = new ArrayList<>();
+		weightInputFields.add(weightInputField);
 	
 	}
 
@@ -164,12 +211,20 @@ public class graphVisualiser extends ApplicationAdapter {
 			}
 		}
 		for(Vertex vertex: graph.getVertexes()) {
+			if(addVertexToggle) {
+				//
+			}
+			
 			vertex.checkDragged();
 			vertex.draw(sr, font, batch);
 		}
 		
 		stage.act(Gdx.graphics.getDeltaTime());
 		stage.draw();
+		
+		for(LButton button: editButtons) {
+			button.draw(sr, batch);
+		}
 		
 	}
 
