@@ -60,59 +60,6 @@ public class graphVisualiser extends ApplicationAdapter {
 	
 	public Graph createGraph(Random r) {
 		graph = new Graph("My Graph");
-		
-		
-		
-		graph.addVertex("a");
-		graph.addVertex("b");
-		graph.addVertex("c");
-		graph.addVertex("d");
-		graph.addVertex("1");
-		graph.addVertex("2");
-		graph.addVertex("3");
-		graph.addVertex("4");
-		
-		for(int i = 0; i < 0; i++) {
-			graph.addVertex(String.valueOf(i));
-		}
-		
-		graph.addEdge("a", "b", 10);
-		graph.addEdge("b", "c", 9);
-		graph.addEdge("c", "d", 8);
-		graph.addEdge("a", "3", 12);
-		graph.addEdge("c", "2", 10);
-		graph.addEdge("c", "1", 10);
-		graph.addEdge("3", "4", 10);
-		graph.addEdge("d", "3", 10);
-		
-		/*
-		
-		graph.addVertex("1");
-		graph.addVertex("2");
-		graph.addVertex("3");
-		
-		graph.addEdge("1", "2", 10);
-		graph.addEdge("2", "3", 10);
-		graph.addEdge("3", "1", 2);
-		graph.addEdge("1", "d", 10);
-		
-		*/
-		for(Vertex vertex: graph.getVertexes()) {
-			int x = r.nextInt(WINDOW_WIDTH - 40) + 20;
-			int y = r.nextInt(WINDOW_HEIGHT - 80) + 60;
-			
-			
-			while(coordinatesCollide(x, y, vertex, graph)) {
-				x = r.nextInt(WINDOW_WIDTH - 40) + 20;
-				y = r.nextInt(WINDOW_HEIGHT - 80) + 60;
-			}
-			
-			
-			vertex.setX(x);
-			vertex.setY(y);
-			vertex.setRadius(VERTEX_RADIUS);
-			
-		}
 		return graph;
 	}
 	
@@ -139,14 +86,21 @@ public class graphVisualiser extends ApplicationAdapter {
 		r = new Random();
 		WINDOW_WIDTH = Gdx.graphics.getWidth();
 		WINDOW_HEIGHT = Gdx.graphics.getHeight();
-		font = new BitmapFont();
-		font.setColor(Color.WHITE);
+
 		batch = new SpriteBatch();
-		
+		System.out.println("hey");
 		graph = createGraph(r);
-		
+		System.out.println("hey2");
 		sr = new ShapeRenderer();
-	
+		
+		TextFieldStyle textFieldStyle = new TextFieldStyle();
+		textFieldStyle.font = graph.getFont();
+		textFieldStyle.fontColor = Color.WHITE;
+		weightInputField = new TextField("sad", textFieldStyle);
+		weightInputField.setX(200);
+		weightInputField.setY(200);
+		weightInputField.setVisible(false);
+		
 		myTexture = new Texture(Gdx.files.internal("retry.png"));
 		myTextureRegion = new TextureRegion(myTexture);
 		myTextRegionDrawable = new TextureRegionDrawable(myTextureRegion);
@@ -164,39 +118,11 @@ public class graphVisualiser extends ApplicationAdapter {
 				graph = createGraph(r);
 			}
 		});
-		TextFieldStyle textFieldStyle = new TextFieldStyle();
-		textFieldStyle.font = font;
-		textFieldStyle.fontColor = Color.WHITE;
-		weightInputField = new TextField("sad", textFieldStyle);
-		weightInputField.setX(200);
-		weightInputField.setY(200);
-		weightInputField.setVisible(false);
 		
-		addVertexButton = new LButton("Add Vertex", Gdx.graphics.getWidth()-520, 10, 120, 30, Color.WHITE, ShapeType.Filled);
-		addVertexButton.setClickedColor(Color.GREEN);
-
-		addEdgeButton = new LButton("Add Edge", Gdx.graphics.getWidth()-390, 10, 120, 30, Color.WHITE, ShapeType.Filled);
-		addEdgeButton.setClickedColor(Color.GREEN);
-		
-		removeVertexButton = new LButton("Remove Vertex", Gdx.graphics.getWidth()-260, 10, 120, 30, Color.WHITE, ShapeType.Filled);
-		removeVertexButton.setClickedColor(Color.RED);
-		
-		removeEdgeButton = new LButton("Remove Edge", Gdx.graphics.getWidth()-130, 10, 120, 30, Color.WHITE, ShapeType.Filled);
-		removeEdgeButton.setClickedColor(Color.RED);
-		
-		editButtons = new ArrayList<>();
-		editButtons.add(addVertexButton);
-		editButtons.add(addEdgeButton);
-		editButtons.add(removeVertexButton);
-		editButtons.add(removeEdgeButton);
 		
 		stage = new Stage(new ScreenViewport());
 		stage.addActor(retryButton);
-		stage.addActor(weightInputField);
 		Gdx.input.setInputProcessor(stage);
-		weightInputFields = new ArrayList<>();
-		weightInputFields.add(weightInputField);
-	
 	}
 
 	@Override
@@ -205,26 +131,10 @@ public class graphVisualiser extends ApplicationAdapter {
 		if(Gdx.input.isKeyJustPressed(Keys.SPACE)) graph = createGraph(r);
 		ScreenUtils.clear(Color.BLACK);
 		
-		for(Vertex vertex: graph.getVertexes()) {
-			for(Edge edge: vertex.getEdges()) {
-				edge.draw(sr);
-			}
-		}
-		for(Vertex vertex: graph.getVertexes()) {
-			if(addVertexToggle) {
-				//
-			}
-			
-			vertex.checkDragged();
-			vertex.draw(sr, font, batch);
-		}
-		
 		stage.act(Gdx.graphics.getDeltaTime());
 		stage.draw();
 		
-		for(LButton button: editButtons) {
-			button.draw(sr, batch);
-		}
+		graph.draw();
 		
 	}
 

@@ -21,6 +21,7 @@ public class LButton {
 	int leftSide, rightSide, top, bottom;
 	int priority;
 	boolean visible = true;
+	boolean toggled = false;
 	
 	ShapeType shapetype;
 	BitmapFont font;
