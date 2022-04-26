@@ -22,7 +22,7 @@ public class Graph {
 	String name = "Graph";
 	ArrayList<Vertex> vertexList = new ArrayList<>();
 	ShapeRenderer sr;
-	Batch batch;
+	SpriteBatch batch;
 	Stage stage;
 	private LButton addVertexButton, addEdgeButton, removeVertexButton, removeEdgeButton;
 	private ArrayList<LButton> editButtons;
@@ -30,6 +30,9 @@ public class Graph {
 	private boolean addVertexToggle, addEdgeToggle, removeVertexToggle, removeEdgeToggle;
 	private int WINDOW_WIDTH, WINDOW_HEIGHT, VERTEX_RADIUS;
 	private Random r;
+	private LButton lastButtonPressed = null;
+	private boolean[] buttonToggles = {false, false, false, false};
+	private Vertex toRemove = null;
 	
 	public Graph(String name) {
 		this.name = name;
@@ -121,6 +124,7 @@ public class Graph {
 				if(distance < 75) {
 					collided = true;
 				}}}
+		//return false;
 		return collided;
 	}
 	
@@ -196,15 +200,17 @@ public class Graph {
 		
 		this.update();
 		
+		System.out.println(buttonToggles[0] + ", " + buttonToggles[1] + ", " + buttonToggles[2] + ", " + buttonToggles[3]);
+		
 		for(Vertex vertex: this.getVertexes()) {
 			for(Edge edge: vertex.getEdges()){
 				edge.draw(sr);
 			}}
 		
 		stage.draw();
-		
+			
 		for(LButton button: editButtons) {
-			button.draw(sr, batch);
+			button.draw(sr, batch, editButtons);
 		}
 		
 		for(Vertex vertex: this.getVertexes()) {
@@ -213,34 +219,53 @@ public class Graph {
 	}
 	
 	public void update() {
+		
+		for(int i = 0; i < editButtons.size(); i++) {
+			buttonToggles[i] = editButtons.get(i).getToggled();
+		}
+		
 		for(Vertex vertex: this.getVertexes()) {
 			for(Edge edge: vertex.getEdges()) {
 				edge.draw(sr);
-			}
-		}
-		
+			}}
+	
 		stage.act(Gdx.graphics.getDeltaTime());
-		stage.draw();
-		
-		for(LButton button: editButtons) {
-			button.draw(sr, batch);
-		}
-		
+	
+		toRemove = null;
 		for(Vertex vertex: this.getVertexes()) {
-			if(addVertexToggle) {
-				//
+			vertex.checkDragged();	
+			if(buttonToggles[0]) {
+				// Add Vertex
 			}
-			
-			vertex.checkDragged();
-			
+			else if(buttonToggles[1]) {
+				// Add Edge
+			}
+			else if(buttonToggles[2]) {
+				if(vertex.checkClicked()) {
+					toRemove = vertex;
+			}}
+			else if(buttonToggles[3]) {
+				// Remove Edge
+			}
 		}
-		
-	}
+		if(toRemove != null) this.getVertexes().remove(toRemove);
+		}
 	
 	public BitmapFont getFont() {
 		return font;
 	}
 	
+	public SpriteBatch getBatch() {
+		return batch;
+	}
+	
+	public ShapeRenderer getShapeRenderer() {
+		return sr;
+	}
+	
+	public ArrayList<LButton> getEditButtons(){
+		return editButtons;
+	}
 	
 	
 }

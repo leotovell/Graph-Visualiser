@@ -1,5 +1,7 @@
 package com.leo.algorithms.Assets;
 
+import java.util.ArrayList;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.graphics.Color;
@@ -8,6 +10,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
+import com.leo.algorithms.Graph;
 
 
 public class LButton {
@@ -57,36 +60,29 @@ public class LButton {
 		}
 	
 	public boolean isClicked() {
-		clicked = false;
 		hover = false;
 		float mouseX = Gdx.input.getX();
 		float mouseY = Gdx.graphics.getHeight() - Gdx.input.getY();
-		boolean M1 = Gdx.input.isButtonPressed(Buttons.LEFT);
+		boolean M1 = Gdx.input.isButtonJustPressed(Buttons.LEFT);
 		if((mouseX >= leftSide & mouseX <= rightSide) & (mouseY <= top & mouseY >= bottom)) {
-			if(M1) {
-				clicked = true;
-				return true;
-			}
-			else {
-				hover = true;
-			}
+			if(M1) { toggled = !toggled; System.out.println(toggled); System.out.println("----");}
+			else hover = true;
 		}
-		
-		return false;
+		return toggled;
 	}
 	
 	public boolean isHovered() {
 		return hover;
 	}
 	
-	public void draw(ShapeRenderer sr, Batch batch) {		
+	public void draw(ShapeRenderer sr, Batch batch, ArrayList<LButton> editButtons) {		
 		// Clicked /  Hovered
-		
 		isClicked();
-		
-		if(clicked) {
+	
+		if(toggled) {
 			this.color = this.clickedColor;
 			this.text = this.clickedText;
+			untoggleOtherButtonsInGroup(editButtons);
 		}
 		else if(hover) {
 			this.color = this.colorHover;
@@ -114,19 +110,11 @@ public class LButton {
 		batch.end();
 	}
 	
-	interface Callable {
-		public void call(int param);
-	}
-	
-	class Test implements Callable {
-		public void call(int param) {
-			System.out.println(param);
-		}
-	}
-	
-	public class Function {
-		public void invoke(Callable callable, int param) {
-			callable.call(param);
+	public void untoggleOtherButtonsInGroup(ArrayList<LButton> editButtons) {
+		for(LButton button: editButtons) {
+			if(button != this) {
+				button.setToggled(false);
+			}
 		}
 	}
 	
@@ -182,6 +170,14 @@ public class LButton {
 	
 	public boolean getVisibile() {
 		return this.visible;
+	}
+	
+	public void setToggled(boolean value) {
+		this.toggled = value;
+	}
+	
+	public boolean getToggled() {
+		return this.toggled;
 	}
 		
 	
