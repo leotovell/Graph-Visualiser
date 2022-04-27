@@ -5,6 +5,7 @@ import java.util.Objects;
 import java.util.Random;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -33,6 +34,7 @@ public class Graph {
 	private LButton lastButtonPressed = null;
 	private boolean[] buttonToggles = {false, false, false, false};
 	private Vertex toRemove = null;
+	private Vertex addSource, addDestination, edgeSource, edgeDestination;
 	
 	public Graph(String name) {
 		this.name = name;
@@ -128,26 +130,35 @@ public class Graph {
 		return collided;
 	}
 	
-	public void addVertex(String name) {
+	public boolean addVertex(String name) {
 		Vertex existingVertex = findVertex(name);
 		if(Objects.isNull(existingVertex)) {
 			Vertex vertex = new Vertex(name);
 			this.vertexList.add(vertex);
+			return true;
 		}
 		else {
 			System.out.println("Vertex with name: " + name + ", already exists, process aborted.");			
 		}
+		return false;
 	}
 	
-	public void addVertex(int x, int y, ArrayList<Actor> actors) {
-		for(Actor actor: actors) {
-			actor.setVisible(true);
+	public void addVertex(int x, int y) {
+		String alphabet = "abcdefghijklmnopqrstuvwxyz";
+		StringBuilder sb = new StringBuilder(3);
+		for(int j = 0; j < 3; j++) {
+			int index = (int)(alphabet.length() * Math.random());
+			sb.append(alphabet.charAt(index));}
+		String newName = sb.toString();
+		boolean vertexCreated = addVertex(newName);
+		if(vertexCreated) {
+			Vertex newVertex = findVertex(newName);
+			newVertex.setX(x);
+			newVertex.setY(y);
+			newVertex.setRadius(VERTEX_RADIUS);
 		}
+		else System.out.println("Vertex already exists, try clicking again.");
 		
-		for(Actor actor: actors) {
-			actor.setVisible(false);
-		}
-		// Ask for weight;
 		
 	}
 	
@@ -190,6 +201,8 @@ public class Graph {
 
 	public void removeEdge(Vertex source, Vertex destination) {
 		source.removeEdge(destination);
+		destination.removeEdge(source);
+		//Try both - quick get around to doing validation
 	}
 	
 	public ArrayList<Vertex> getVertexes(){
@@ -200,7 +213,7 @@ public class Graph {
 		
 		this.update();
 		
-		System.out.println(buttonToggles[0] + ", " + buttonToggles[1] + ", " + buttonToggles[2] + ", " + buttonToggles[3]);
+//		System.out.println(buttonToggles[0] + ", " + buttonToggles[1] + ", " + buttonToggles[2] + ", " + buttonToggles[3]);
 		
 		for(Vertex vertex: this.getVertexes()) {
 			for(Edge edge: vertex.getEdges()){
@@ -230,25 +243,50 @@ public class Graph {
 			}}
 	
 		stage.act(Gdx.graphics.getDeltaTime());
-	
-		toRemove = null;
+		
 		for(Vertex vertex: this.getVertexes()) {
-			vertex.checkDragged();	
+			vertex.checkDragged();
+		}
+	
+		Vertex toRemove = null;
+		boolean toAdd = false;
+		for(Vertex vertex: this.getVertexes()) {
 			if(buttonToggles[0]) {
-				// Add Vertex
+				if(Gdx.input.isButtonJustPressed(Buttons.LEFT)) {
+					toAdd = true;
+				}
 			}
 			else if(buttonToggles[1]) {
-				// Add Edge
+				if(vertex.checkClicked()) {
+					if(addSource == null) { addSource = vertex; vertex.setColor(Color.PURPLE);}
+					else if(addDestination == null) { addDestination = vertex; vertex.setColor(Color.PURPLE);}
+					}
+				if(addSource != null & addDestination != null) {
+					addEdge(addSource, addDestination, r.nextInt(15));
+					addSource.setColor(Color.FIREBRICK);
+					addDestination.setColor(Color.FIREBRICK);
+					addSource = addDestination = null;
+				}
 			}
 			else if(buttonToggles[2]) {
 				if(vertex.checkClicked()) {
 					toRemove = vertex;
 			}}
 			else if(buttonToggles[3]) {
-				// Remove Edge
+				if(vertex.checkClicked()) {
+					if(edgeSource == null) {edgeSource = vertex; vertex.setColor(Color.CHARTREUSE);}
+					else if(edgeDestination == null) {edgeDestination = vertex; vertex.setColor(Color.CHARTREUSE);}
+					}
+				if(edgeSource != null & edgeDestination != null) {
+					removeEdge(edgeSource, edgeDestination);
+					edgeSource.setColor(Color.FIREBRICK);
+					edgeDestination.setColor(Color.FIREBRICK);
+					edgeSource = edgeDestination = null;
+				}
 			}
 		}
 		if(toRemove != null) this.getVertexes().remove(toRemove);
+		if(toAdd) this.addVertex(Gdx.input.getX(), Gdx.graphics.getHeight() - Gdx.input.getY());
 		}
 	
 	public BitmapFont getFont() {

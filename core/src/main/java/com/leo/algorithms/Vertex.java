@@ -21,6 +21,7 @@ public class Vertex {
 	private int originalX = 0, originalY = 0;
 	private float mouseX, mouseY, distance;
 	private boolean M1 = false;
+	private Color color = Color.FIREBRICK;
 	
 	public Vertex(String name) {
 		this.edgeList = new ArrayList<>();
@@ -80,7 +81,7 @@ public class Vertex {
 
 	public void draw(ShapeRenderer sr, BitmapFont font, Batch batch) {
 		sr.begin(ShapeType.Filled);
-		sr.setColor(Color.FIREBRICK);
+		sr.setColor(this.color);
 		sr.circle(this.x, this.y, this.radius);
 		sr.end();
 
@@ -119,5 +120,9 @@ public class Vertex {
 		boolean clicked = false;
 		if(M1 & (distance < this.radius)) clicked = true;
 		return clicked;
+	}
+	
+	public void setColor(Color color) {
+		this.color = color;
 	}
 }

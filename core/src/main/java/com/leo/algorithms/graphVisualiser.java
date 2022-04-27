@@ -85,12 +85,14 @@ public class graphVisualiser extends ApplicationAdapter {
 
 		stage.act(Gdx.graphics.getDeltaTime());
 		stage.draw();
-
+		
 		graph.draw();
 		
 		graph.getBatch().begin();
 		graph.getFont().draw(graph.getBatch(), "FPS: " + Gdx.graphics.getFramesPerSecond(), Gdx.graphics.getWidth() - 70, Gdx.graphics.getHeight() - 15);
 		graph.getBatch().end();
+		
+		
 	}
 
 	@Override
