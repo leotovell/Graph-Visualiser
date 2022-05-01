@@ -29,10 +29,24 @@ public class Vertex {
 	}
 
 	public void addEdge(Vertex destination, Integer weight) {
-		Edge edge = new Edge(this, destination, weight);
-		this.edgeList.add(edge);
-
-	}
+		boolean skipCreation = false;
+		if(destination == this) {
+			System.out.println("Cannot create edge to self!");
+			skipCreation = true;
+		}
+			
+		for(Edge edge: this.getEdges()) {
+			if((edge.getStartVertex() == this && edge.getEndVertex() == destination) || (edge.getEndVertex() == this && edge.getStartVertex() == destination)) {
+				System.out.println("Edge already exists in non-directional graph!");
+				skipCreation = true;
+			}
+		}
+		
+		if(!skipCreation){
+			Edge edge = new Edge(this, destination, weight);
+			this.edgeList.add(edge);
+			}
+		}
 
 	public void removeEdge(Vertex destination) {
 		this.edgeList.removeIf(edge -> edge.getEndVertex().equals(destination));

@@ -81,6 +81,7 @@ public class graphVisualiser extends ApplicationAdapter {
 	public void render() {
 		if(Gdx.input.isKeyJustPressed(Keys.Q)) Gdx.app.exit();
 		if(Gdx.input.isKeyJustPressed(Keys.SPACE)) graph = createGraph(r);
+		if(Gdx.input.isKeyJustPressed(Keys.C)) graph.clearGraph();
 		ScreenUtils.clear(Color.BLACK);
 
 		stage.act(Gdx.graphics.getDeltaTime());

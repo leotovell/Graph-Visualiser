@@ -65,7 +65,7 @@ public class LButton {
 		float mouseY = Gdx.graphics.getHeight() - Gdx.input.getY();
 		boolean M1 = Gdx.input.isButtonJustPressed(Buttons.LEFT);
 		if((mouseX >= leftSide & mouseX <= rightSide) & (mouseY <= top & mouseY >= bottom)) {
-			if(M1) { toggled = !toggled; System.out.println(toggled); System.out.println("----");}
+			if(M1) toggled = !toggled;
 			else hover = true;
 		}
 		return toggled;
@@ -178,6 +178,14 @@ public class LButton {
 	
 	public boolean getToggled() {
 		return this.toggled;
+	}
+	
+	public int getX() {
+		return this.x;
+	}
+	
+	public int getY() {
+		return this.y;
 	}
 		
 	

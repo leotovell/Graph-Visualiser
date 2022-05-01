@@ -86,14 +86,17 @@ public class Graph {
 			this.addVertex(String.valueOf(i));
 		}
 		
+//		this.addEdge("a", "b", 10);
+//		this.addEdge("b", "c", 9);
+//		this.addEdge("c", "d", 8);
+//		this.addEdge("a", "3", 12);
+//		this.addEdge("c", "2", 10);
+//		this.addEdge("c", "1", 10);
+//		this.addEdge("3", "4", 10);
+//		this.addEdge("d", "3", 10);
+		
 		this.addEdge("a", "b", 10);
-		this.addEdge("b", "c", 9);
-		this.addEdge("c", "d", 8);
-		this.addEdge("a", "3", 12);
-		this.addEdge("c", "2", 10);
-		this.addEdge("c", "1", 10);
-		this.addEdge("3", "4", 10);
-		this.addEdge("d", "3", 10);
+		this.addEdge("b", "a", 29);
 		
 		for(Vertex vertex: this.getVertexes()) {
 			int x = r.nextInt(WINDOW_WIDTH - 40) + 20;
@@ -116,10 +119,6 @@ public class Graph {
 		boolean collided = false;
 		for(Vertex vertex: graph.getVertexes()) {
 			if(vertex != currentVertex & vertex.hasCoords()) {
-				if(x < 20) x = 20;
-				if(x > WINDOW_WIDTH - 20) x = WINDOW_WIDTH - 20;
-				if(y < 20) y = 20;
-				if(y > WINDOW_HEIGHT - 20) y = WINDOW_HEIGHT - 20;
 				int dx = vertex.getX() - x;
 				int dy = vertex.getY() - y;
 				int distance = (int) Math.hypot(dx, dy);
@@ -144,26 +143,36 @@ public class Graph {
 	}
 	
 	public void addVertex(int x, int y) {
-		String alphabet = "abcdefghijklmnopqrstuvwxyz";
-		StringBuilder sb = new StringBuilder(3);
-		for(int j = 0; j < 3; j++) {
-			int index = (int)(alphabet.length() * Math.random());
-			sb.append(alphabet.charAt(index));}
-		String newName = sb.toString();
-		boolean vertexCreated = addVertex(newName);
-		if(vertexCreated) {
-			Vertex newVertex = findVertex(newName);
-			newVertex.setX(x);
-			newVertex.setY(y);
-			newVertex.setRadius(VERTEX_RADIUS);
+		if((x > 20 && x < WINDOW_WIDTH - 20) && (y > 60 && y < WINDOW_HEIGHT - 30)) {
+			String alphabet = "abcdefghijklmnopqrstuvwxyz";
+			StringBuilder sb = new StringBuilder(3);
+			for(int j = 0; j < 3; j++) {
+				int index = (int)(alphabet.length() * Math.random());
+				sb.append(alphabet.charAt(index));}
+			String newName = sb.toString();
+			boolean vertexCreated = addVertex(newName);
+			if(vertexCreated) {
+				Vertex newVertex = findVertex(newName);
+				newVertex.setX(x);
+				newVertex.setY(y);
+				newVertex.setRadius(VERTEX_RADIUS);
+			}
+			else System.out.println("Vertex already exists, try clicking again.");
 		}
-		else System.out.println("Vertex already exists, try clicking again.");
-		
 		
 	}
 	
 	public void removeVertex(Vertex vertex) {
-		this.vertexList.remove(vertex);
+		ArrayList<Edge> edgesToDelete = new ArrayList<>();
+		for(Vertex vertexToCheck: this.getVertexes()) { // Get all verticies in graph.
+			for(Edge edge: vertexToCheck.getEdges()) { // Get each edge
+				if(edge.getEndVertex() == vertex) { // If edge is attached to the vertex we are deleting
+					edgesToDelete.add(edge);
+				}}};
+		
+		for(Edge edge: edgesToDelete) this.removeEdge(edge.getStartVertex(), edge.getEndVertex());
+		
+		this.vertexList.remove(vertex); // Vertex edges are deleted along with self.
 	}
 	
 	public void addEdge(Vertex source, Vertex destination, Integer weight) {
@@ -209,11 +218,14 @@ public class Graph {
 		return this.vertexList;
 	}
 	
+	public void clearGraph() {
+		this.getVertexes().clear();
+	}
+	
 	public void draw() {
 		
 		this.update();
 		
-//		System.out.println(buttonToggles[0] + ", " + buttonToggles[1] + ", " + buttonToggles[2] + ", " + buttonToggles[3]);
 		
 		for(Vertex vertex: this.getVertexes()) {
 			for(Edge edge: vertex.getEdges()){
@@ -241,22 +253,23 @@ public class Graph {
 			for(Edge edge: vertex.getEdges()) {
 				edge.draw(sr);
 			}}
-	
 		stage.act(Gdx.graphics.getDeltaTime());
 		
 		for(Vertex vertex: this.getVertexes()) {
 			vertex.checkDragged();
 		}
 	
-		Vertex toRemove = null;
 		boolean toAdd = false;
-		for(Vertex vertex: this.getVertexes()) {
-			if(buttonToggles[0]) {
-				if(Gdx.input.isButtonJustPressed(Buttons.LEFT)) {
-					toAdd = true;
-				}
+		
+		if(buttonToggles[0]) {
+			if(Gdx.input.isButtonJustPressed(Buttons.LEFT)) {
+				toAdd = true;
 			}
-			else if(buttonToggles[1]) {
+		}
+		
+		Vertex toRemove = null;
+		for(Vertex vertex: this.getVertexes()) {
+			if(buttonToggles[1]) {
 				if(vertex.checkClicked()) {
 					if(addSource == null) { addSource = vertex; vertex.setColor(Color.PURPLE);}
 					else if(addDestination == null) { addDestination = vertex; vertex.setColor(Color.PURPLE);}
@@ -285,7 +298,7 @@ public class Graph {
 				}
 			}
 		}
-		if(toRemove != null) this.getVertexes().remove(toRemove);
+		if(toRemove != null) this.removeVertex(toRemove);;
 		if(toAdd) this.addVertex(Gdx.input.getX(), Gdx.graphics.getHeight() - Gdx.input.getY());
 		}
 	
