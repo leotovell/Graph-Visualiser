@@ -86,17 +86,17 @@ public class Graph {
 			this.addVertex(String.valueOf(i));
 		}
 		
-//		this.addEdge("a", "b", 10);
-//		this.addEdge("b", "c", 9);
-//		this.addEdge("c", "d", 8);
-//		this.addEdge("a", "3", 12);
-//		this.addEdge("c", "2", 10);
-//		this.addEdge("c", "1", 10);
-//		this.addEdge("3", "4", 10);
-//		this.addEdge("d", "3", 10);
-		
 		this.addEdge("a", "b", 10);
-		this.addEdge("b", "a", 29);
+		this.addEdge("b", "c", 9);
+		this.addEdge("c", "d", 8);
+		this.addEdge("a", "3", 12);
+		this.addEdge("c", "2", 10);
+		this.addEdge("c", "1", 10);
+		this.addEdge("3", "4", 10);
+		this.addEdge("d", "3", 10);
+		
+//		this.addEdge("a", "b", 10);
+//		this.addEdge("b", "a", 29);
 		
 		for(Vertex vertex: this.getVertexes()) {
 			int x = r.nextInt(WINDOW_WIDTH - 40) + 20;
@@ -107,6 +107,8 @@ public class Graph {
 				x = r.nextInt(WINDOW_WIDTH - 40) + 20;
 				y = r.nextInt(WINDOW_HEIGHT - 80) + 60;
 			}
+			
+			System.out.println(WINDOW_HEIGHT - 80 + 60);
 			
 			
 			vertex.setX(x);
@@ -153,6 +155,10 @@ public class Graph {
 			boolean vertexCreated = addVertex(newName);
 			if(vertexCreated) {
 				Vertex newVertex = findVertex(newName);
+//				System.out.println("---- addVertex function Start ----");
+//				System.out.println(x);
+//				System.out.println(y);
+//				System.out.println("---- addVertex function  End ----");
 				newVertex.setX(x);
 				newVertex.setY(y);
 				newVertex.setRadius(VERTEX_RADIUS);
@@ -176,7 +182,7 @@ public class Graph {
 	}
 	
 	public void addEdge(Vertex source, Vertex destination, Integer weight) {
-		source.addEdge(destination, weight);
+		source.addEdge(destination, weight, this.getVertexes());
 	}
 	
 	public Vertex findVertex(String data) {
@@ -204,7 +210,7 @@ public class Graph {
 		if(startFailed) System.out.println("Source vertex: " + source + ", not found. Edge not added. | Line: " + callersLineNumber);
 		if(endFailed) System.out.println("Destination vertex: " + destination + ", not found. Edge not added. | Line: " + callersLineNumber);
 		if(!(startFailed) & !(endFailed)) {
-			start.addEdge(end, weight);
+			start.addEdge(end, weight, this.getVertexes());
 		}
 	}
 
@@ -259,11 +265,14 @@ public class Graph {
 			vertex.checkDragged();
 		}
 	
+		
+		
 		boolean toAdd = false;
 		
 		if(buttonToggles[0]) {
 			if(Gdx.input.isButtonJustPressed(Buttons.LEFT)) {
-				toAdd = true;
+				this.addVertex(Gdx.input.getX(), Gdx.graphics.getHeight() - Gdx.input.getY());
+				// CORRECT X/Y
 			}
 		}
 		
@@ -298,8 +307,9 @@ public class Graph {
 				}
 			}
 		}
+
 		if(toRemove != null) this.removeVertex(toRemove);;
-		if(toAdd) this.addVertex(Gdx.input.getX(), Gdx.graphics.getHeight() - Gdx.input.getY());
+		
 		}
 	
 	public BitmapFont getFont() {

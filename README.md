@@ -7,12 +7,13 @@ I eventually want to make this a graphing tool with different algorithms and so.
 ---------------
 
 #### To-do
-- fix [Dragging issue](https://github.com/LeoTovell/Graph-Visualiser/issues/1)
-- fix [Edging issue](https://github.com/LeoTovell/Graph-Visualiser/issues/2)
-- Shortest route (Dijsktras algorithm)
-- Minimum Spanning Tree (Kruskals algorithm)
+- Create system:
+	to touch and create vertices
+	to touch two vertices and create an edge: pop-up screen for weight?
+	
+	algorithms
 	
 #### Current Version
-- Added bottom UI bar.
+Just added some buttons at the bottom to maake it a bit easier for the user to use. (functionality soon to come...)
 
 ![Alt Text](https://github.com/LeoTovell/Graph-Visualiser/blob/main/pic/withButtnos.png)
