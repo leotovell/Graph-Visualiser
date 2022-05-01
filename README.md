@@ -7,7 +7,8 @@ I eventually want to make this a graphing tool with different algorithms and so.
 ---------------
 
 #### To-do
-- fix *insert issue*
+- fix [Dragging issue](https://github.com/LeoTovell/Graph-Visualiser/issues/1)
+- fix [Edging issue](https://github.com/LeoTovell/Graph-Visualiser/issues/2)
 - Shortest route (Dijsktras algorithm)
 - Minimum Spanning Tree (Kruskals algorithm)
 	
