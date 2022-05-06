@@ -145,28 +145,25 @@ public class Graph {
 	}
 	
 	public void addVertex(int x, int y) {
-		if((x > 20 && x < WINDOW_WIDTH - 20) && (y > 60 && y < WINDOW_HEIGHT - 30)) {
-			String alphabet = "abcdefghijklmnopqrstuvwxyz";
-			StringBuilder sb = new StringBuilder(3);
-			for(int j = 0; j < 3; j++) {
-				int index = (int)(alphabet.length() * Math.random());
-				sb.append(alphabet.charAt(index));}
-			String newName = sb.toString();
-			boolean vertexCreated = addVertex(newName);
-			if(vertexCreated) {
-				Vertex newVertex = findVertex(newName);
+		String alphabet = "abcdefghijklmnopqrstuvwxyz";
+		StringBuilder sb = new StringBuilder(3);
+		for(int j = 0; j < 3; j++) {
+			int index = (int)(alphabet.length() * Math.random());
+			sb.append(alphabet.charAt(index));}
+		String newName = sb.toString();
+		boolean vertexCreated = addVertex(newName);
+		if(vertexCreated) {
+			Vertex newVertex = findVertex(newName);
 //				System.out.println("---- addVertex function Start ----");
 //				System.out.println(x);
 //				System.out.println(y);
 //				System.out.println("---- addVertex function  End ----");
-				newVertex.setX(x);
-				newVertex.setY(y);
-				newVertex.setRadius(VERTEX_RADIUS);
-			}
+			newVertex.setX(x);
+			newVertex.setY(y);
+			newVertex.setRadius(VERTEX_RADIUS);
+		}
 			else System.out.println("Vertex already exists, try clicking again.");
 		}
-		
-	}
 	
 	public void removeVertex(Vertex vertex) {
 		ArrayList<Edge> edgesToDelete = new ArrayList<>();
@@ -271,7 +268,14 @@ public class Graph {
 		
 		if(buttonToggles[0]) {
 			if(Gdx.input.isButtonJustPressed(Buttons.LEFT)) {
-				this.addVertex(Gdx.input.getX(), Gdx.graphics.getHeight() - Gdx.input.getY());
+				int x = Gdx.input.getX();
+				int y = Gdx.input.getY();
+				int h = Gdx.graphics.getHeight();
+				System.out.println("h" + (h - y));
+				System.out.println("X" + x);
+				System.out.println("y" + y);
+				this.addVertex(x, h - y);
+
 				// CORRECT X/Y
 			}
 		}

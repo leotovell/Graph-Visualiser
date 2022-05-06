@@ -117,9 +117,6 @@ public class Vertex {
 	}
 
 	public void checkDragged() {
-		originalX = (int) mouseX;
-		originalY = (int) mouseY;
-
 		mouseX = Gdx.input.getX();
 		mouseY = Gdx.graphics.getHeight() - Gdx.input.getY();
 		M1 = Gdx.input.isButtonPressed(Buttons.LEFT);
@@ -129,10 +126,8 @@ public class Vertex {
 		distance = (int) (Math.hypot(dx,  dy));
 
 		if(M1 & (distance < this.radius)) {
-			int changeX = (int) (originalX - mouseX);
-			int changeY = (int) (originalY - mouseY);
-			this.setX(x - changeX);
-			this.setY(y - changeY);
+			this.setX(x + Gdx.input.getDeltaX());
+			this.setY(y - Gdx.input.getDeltaY());
 		}
 	}
 	
