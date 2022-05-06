@@ -22,13 +22,14 @@ public class Vertex {
 	private float mouseX, mouseY, distance;
 	private boolean M1 = false;
 	private Color color = Color.FIREBRICK;
+	private boolean pp = true;
 	
 	public Vertex(String name) {
 		this.edgeList = new ArrayList<>();
 		this.name = name;
 	}
 
-	public void addEdge(Vertex destination, Integer weight) {
+	public void addEdge(Vertex destination, Integer weight, ArrayList<Vertex> allVertices) {
 		boolean skipCreation = false;
 		if(destination == this) {
 			System.out.println("Cannot create edge to self!");
@@ -94,6 +95,12 @@ public class Vertex {
 	}
 
 	public void draw(ShapeRenderer sr, BitmapFont font, Batch batch) {
+		
+//		System.out.println("---- Vertex Class Start ----");
+//		System.out.println(x);
+//		System.out.println(y);
+//		System.out.println("---- Vertex Class End ----");
+		
 		sr.begin(ShapeType.Filled);
 		sr.setColor(this.color);
 		sr.circle(this.x, this.y, this.radius);
@@ -106,27 +113,21 @@ public class Vertex {
 		batch.begin();
 		font.draw(batch, text, fontX, fontY);
 		batch.end();
-
-		//System.out.println("X: " + this.x + ", Y: " + this.y);
+		
 	}
 
 	public void checkDragged() {
-		originalX = (int) mouseX;
-		originalY = (int) mouseY;
-
 		mouseX = Gdx.input.getX();
 		mouseY = Gdx.graphics.getHeight() - Gdx.input.getY();
-		M1 = Gdx.input.isButtonJustPressed(Buttons.LEFT);
+		M1 = Gdx.input.isButtonPressed(Buttons.LEFT);
 
 		int dx = (int) (mouseX - this.x);
 		int dy = (int) (mouseY - this.y);
 		distance = (int) (Math.hypot(dx,  dy));
 
 		if(M1 & (distance < this.radius)) {
-			int changeX = (int) (originalX - mouseX);
-			int changeY = (int) (originalY - mouseY);
-			this.setX(x - changeX);
-			this.setY(y - changeY);
+			this.setX(x + Gdx.input.getDeltaX());
+			this.setY(y - Gdx.input.getDeltaY());
 		}
 	}
 	
