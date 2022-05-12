@@ -12,17 +12,19 @@ import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 
+/*
+ * TODO: 
+ * 
+ * 
+ */
 
 public class Vertex {
 
 	private String name = null;
 	private ArrayList<Edge> edgeList;
 	private int x,y,radius;
-	private int originalX = 0, originalY = 0;
 	private float mouseX, mouseY, distance;
-	private boolean M1 = false;
 	private Color color = Color.FIREBRICK;
-	private boolean pp = true;
 	
 	public Vertex(String name) {
 		this.edgeList = new ArrayList<>();
@@ -96,11 +98,6 @@ public class Vertex {
 
 	public void draw(ShapeRenderer sr, BitmapFont font, Batch batch) {
 		
-//		System.out.println("---- Vertex Class Start ----");
-//		System.out.println(x);
-//		System.out.println(y);
-//		System.out.println("---- Vertex Class End ----");
-		
 		sr.begin(ShapeType.Filled);
 		sr.setColor(this.color);
 		sr.circle(this.x, this.y, this.radius);
@@ -119,13 +116,12 @@ public class Vertex {
 	public void checkDragged() {
 		mouseX = Gdx.input.getX();
 		mouseY = Gdx.graphics.getHeight() - Gdx.input.getY();
-		M1 = Gdx.input.isButtonPressed(Buttons.LEFT);
 
 		int dx = (int) (mouseX - this.x);
 		int dy = (int) (mouseY - this.y);
 		distance = (int) (Math.hypot(dx,  dy));
 
-		if(M1 & (distance < this.radius)) {
+		if(Gdx.input.isButtonPressed(Buttons.LEFT) & (distance < this.radius)) {
 			this.setX(x + Gdx.input.getDeltaX());
 			this.setY(y - Gdx.input.getDeltaY());
 		}
@@ -133,7 +129,7 @@ public class Vertex {
 	
 	public boolean checkClicked() {
 		boolean clicked = false;
-		if(M1 & (distance < this.radius)) clicked = true;
+		if(Gdx.input.isButtonJustPressed(Buttons.LEFT) & (distance < this.radius)) clicked = true;
 		return clicked;
 	}
 	
