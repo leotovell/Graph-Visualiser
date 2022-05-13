@@ -1,6 +1,8 @@
 package com.leo.algorithms;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.Objects;
 import java.util.Random;
 
@@ -16,6 +18,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.leo.algorithms.Assets.LButton;
+import com.leo.algorithms.Assets.Resources;
 
 
 public class Graph {
@@ -28,7 +31,7 @@ public class Graph {
 	private LButton addVertexButton, addEdgeButton, removeVertexButton, removeEdgeButton;
 	private ArrayList<LButton> editButtons;
 	private BitmapFont font;
-	private int WINDOW_WIDTH, WINDOW_HEIGHT, VERTEX_RADIUS;
+	private int VERTEX_RADIUS;
 	private Random r;
 	private boolean[] buttonToggles = {false, false, false, false};
 	private Vertex toRemove = null;
@@ -36,19 +39,16 @@ public class Graph {
 	
 	public Graph(String name) {
 		this.name = name;
-		sr = new ShapeRenderer();
-		batch = new SpriteBatch();
-		stage = new Stage(new ScreenViewport());
-		font = new BitmapFont();
-		font = new BitmapFont();
+		sr = Resources.sr;
+		batch = Resources.batch;
+		stage = Resources.stage;
+		font = Resources.font;
 		font.setColor(Color.WHITE);
-		WINDOW_WIDTH = Gdx.graphics.getWidth();
-		WINDOW_HEIGHT = Gdx.graphics.getHeight();
 		VERTEX_RADIUS = 15;
 		r = new Random();
 		
-		createUI();
-		createDefaultVertices();
+		createUI(); // Create the UI
+		createDefaultVertices(); // Create the default set of vertices and edges.
 		
 	}
 	
@@ -70,7 +70,6 @@ public class Graph {
 		editButtons.add(addEdgeButton);
 		editButtons.add(removeVertexButton);
 		editButtons.add(removeEdgeButton);
-
 	}
 	
 	public void createDefaultVertices() {
@@ -92,21 +91,15 @@ public class Graph {
 		this.addEdge("3", "4", 10);
 		this.addEdge("d", "3", 10);
 		
-//		this.addEdge("a", "b", 10);
-//		this.addEdge("b", "a", 29);
-		
 		for(Vertex vertex: this.getVertexes()) {
-			int x = r.nextInt(WINDOW_WIDTH - 40) + 20;
-			int y = r.nextInt(WINDOW_HEIGHT - 80) + 60;
+			int x = r.nextInt(Gdx.graphics.getWidth() - 40) + 20;
+			int y = r.nextInt(Gdx.graphics.getHeight() - 80) + 60;
 			
 			
-			while(coordinatesCollide(x, y, vertex, this)) {
-				x = r.nextInt(WINDOW_WIDTH - 40) + 20;
-				y = r.nextInt(WINDOW_HEIGHT - 80) + 60;
+			while(coordinatesCollide(x, y, vertex)) {
+				x = r.nextInt(Gdx.graphics.getWidth() - 40) + 20;
+				y = r.nextInt(Gdx.graphics.getHeight() - 80) + 60;
 			}
-			
-			System.out.println(WINDOW_HEIGHT - 80 + 60);
-			
 			
 			vertex.setX(x);
 			vertex.setY(y);
@@ -114,9 +107,9 @@ public class Graph {
 			}
 		}
 	
-	public boolean coordinatesCollide(int x, int y, Vertex currentVertex, Graph graph) {
+	public boolean coordinatesCollide(int x, int y, Vertex currentVertex) {
 		boolean collided = false;
-		for(Vertex vertex: graph.getVertexes()) {
+		for(Vertex vertex: this.getVertexes()) {
 			if(vertex != currentVertex & vertex.hasCoords()) {
 				int dx = vertex.getX() - x;
 				int dy = vertex.getY() - y;
@@ -142,24 +135,24 @@ public class Graph {
 	}
 	
 	public void addVertex(int x, int y) {
+		// Name building
 		String alphabet = "abcdefghijklmnopqrstuvwxyz";
 		StringBuilder sb = new StringBuilder(3);
 		for(int j = 0; j < 3; j++) {
 			int index = (int)(alphabet.length() * Math.random());
 			sb.append(alphabet.charAt(index));}
 		String newName = sb.toString();
+		
+		// Creating Vertex
 		boolean vertexCreated = addVertex(newName);
 		if(vertexCreated) {
 			Vertex newVertex = findVertex(newName);
-//				System.out.println("---- addVertex function Start ----");
-//				System.out.println(x);
-//				System.out.println(y);
-//				System.out.println("---- addVertex function  End ----");
-			newVertex.setX(x);
-			newVertex.setY(y);
+			newVertex.setPosition(x, y);
 			newVertex.setRadius(VERTEX_RADIUS);
 		}
-			else System.out.println("Vertex already exists, try clicking again.");
+		
+		// Error handling
+		else System.out.println("Vertex already exists, try clicking again.");
 		}
 	
 	public void removeVertex(Vertex vertex) {
@@ -167,11 +160,11 @@ public class Graph {
 		for(Vertex vertexToCheck: this.getVertexes()) { // Get all verticies in graph.
 			for(Edge edge: vertexToCheck.getEdges()) { // Get each edge
 				if(edge.getEndVertex() == vertex) { // If edge is attached to the vertex we are deleting
-					edgesToDelete.add(edge);
+					edgesToDelete.add(edge); // Add to list to be removed after loop.
 				}}};
 		
+		// Removes all vertexes as above.
 		for(Edge edge: edgesToDelete) this.removeEdge(edge.getStartVertex(), edge.getEndVertex());
-		
 		this.vertexList.remove(vertex); // Vertex edges are deleted along with self.
 	}
 	
@@ -193,88 +186,90 @@ public class Graph {
 		boolean startFailed = false;
 		boolean endFailed = false;
 		int callersLineNumber = new Exception().getStackTrace()[1].getLineNumber();
+		
+		// Attempts to find start vertex, returns false if not found.
 		Vertex start = findVertex(source);
 		if(Objects.isNull(start)) {
 			startFailed = true;
 		}
+		
+		// Attempts to find end vertex, returns false if not found.
 		Vertex end = findVertex(destination);
 		if(Objects.isNull(end)) {
 			endFailed = true;			
 		}
-		if(startFailed) System.out.println("Source vertex: " + source + ", not found. Edge not added. | Line: " + callersLineNumber);
-		if(endFailed) System.out.println("Destination vertex: " + destination + ", not found. Edge not added. | Line: " + callersLineNumber);
+		
+		// Creates Edge if both vertices are found.
 		if(!(startFailed) & !(endFailed)) {
 			start.addEdge(end, weight, this.getVertexes());
 		}
+		
+		// Error handling.
+		if(startFailed) System.out.println("Source vertex: " + source + ", not found. Edge not added. | Line: " + callersLineNumber);
+		if(endFailed) System.out.println("Destination vertex: " + destination + ", not found. Edge not added. | Line: " + callersLineNumber);
 	}
 
 	public void removeEdge(Vertex source, Vertex destination) {
 		source.removeEdge(destination);
 		destination.removeEdge(source);
-		//Try both - quick get around to doing validation
+		//Try both - quick get around to doing validation in non-directional
 	}
 	
 	public void clearGraph() {
+		// Removes all vertexes and therefore edges, clearing the graph
 		this.getVertexes().clear();
 	}
 	
 	public void draw() {
-		
+		// Calls update on all elements before drawing.
 		this.update();
 		
-		
+		// Draws the edges.
 		for(Vertex vertex: this.getVertexes()) {
 			for(Edge edge: vertex.getEdges()){
 				edge.draw(sr);
 			}}
 		
+		// Draws the scene2d inputs (if any)
 		stage.draw();
-			
+		
+		// Draws the menu buttons
 		for(LButton button: editButtons) {
 			button.draw(sr, batch, editButtons);
 		}
 		
+		// Draws the Vertices
 		for(Vertex vertex: this.getVertexes()) {
 			vertex.draw(sr, font, batch);
 		}
 	}
 	
 	public void update() {
-		
+		// Updates toggled button values.
 		for(int i = 0; i < editButtons.size(); i++) {
 			buttonToggles[i] = editButtons.get(i).getToggled();
 		}
 		
-		for(Vertex vertex: this.getVertexes()) {
-			for(Edge edge: vertex.getEdges()) {
-				edge.draw(sr);
-			}}
+		// Acts out stage
 		stage.act(Gdx.graphics.getDeltaTime());
 		
+		// Checks for vertex movement via dragging.
 		for(Vertex vertex: this.getVertexes()) {
 			vertex.checkDragged();
 		}
-	
-		
-		
+			
 		boolean toAdd = false;
-		
+	
+		// Add Vertex method
 		if(buttonToggles[0]) {
 			if(Gdx.input.isButtonJustPressed(Buttons.LEFT)) {
-				int x = Gdx.input.getX();
-				int y = Gdx.input.getY();
-				int h = Gdx.graphics.getHeight();
-				System.out.println("h" + (h - y));
-				System.out.println("X" + x);
-				System.out.println("y" + y);
-				this.addVertex(x, h - y);
-
-				// CORRECT X/Y
+				this.addVertex(Gdx.input.getX(), Gdx.graphics.getHeight() - Gdx.input.getY());
 			}
 		}
 		
 		Vertex toRemove = null;
 		for(Vertex vertex: this.getVertexes()) {
+			// Add Edge method
 			if(buttonToggles[1]) {
 				if(vertex.checkClicked()) {
 					if(addSource == null) { addSource = vertex; vertex.setColor(Color.PURPLE);}
@@ -287,10 +282,14 @@ public class Graph {
 					addSource = addDestination = null;
 				}
 			}
+			
+			// Remove Vertex method
 			else if(buttonToggles[2]) {
 				if(vertex.checkClicked()) {
 					toRemove = vertex;
 			}}
+			
+			// Remove Edge method
 			else if(buttonToggles[3]) {
 				if(vertex.checkClicked()) {
 					if(edgeSource == null) {edgeSource = vertex; vertex.setColor(Color.CHARTREUSE);}
@@ -301,13 +300,13 @@ public class Graph {
 					edgeSource.setColor(Color.FIREBRICK);
 					edgeDestination.setColor(Color.FIREBRICK);
 					edgeSource = edgeDestination = null;
-				}
-			}
-		}
+				}}}
 
-		if(toRemove != null) this.removeVertex(toRemove);;
-		
-		}
+		// Removes vertices as added above.
+		if(toRemove != null) this.removeVertex(toRemove);;	
+	}
+	
+	// Getters/Setters
 	
 	public BitmapFont getFont() {
 		return font;

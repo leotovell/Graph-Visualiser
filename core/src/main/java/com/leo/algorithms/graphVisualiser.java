@@ -20,6 +20,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.leo.algorithms.Assets.Resources;
 
 /** {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms. */
 public class graphVisualiser extends ApplicationAdapter {
@@ -35,6 +36,7 @@ public class graphVisualiser extends ApplicationAdapter {
 	private TextField weightInputField;
 	private Random r;
 	private int fps;
+	public Resources resources;
 
 
 	public Graph createGraph() {
@@ -46,11 +48,11 @@ public class graphVisualiser extends ApplicationAdapter {
 	public void create() {
 		
 		Gdx.graphics.setFullscreenMode(Gdx.graphics.getDisplayMode());
+		resources = new Resources();
 
 		r = new Random();
-		WINDOW_WIDTH = Gdx.graphics.getWidth();
-		WINDOW_HEIGHT = Gdx.graphics.getHeight();
 		graph = createGraph();
+		resources.setGraph(graph);
 		fps = Gdx.graphics.getFramesPerSecond();
 
 		TextFieldStyle textFieldStyle = new TextFieldStyle();
@@ -76,7 +78,7 @@ public class graphVisualiser extends ApplicationAdapter {
 			}
 		});
 
-		stage = new Stage(new ScreenViewport());
+		stage = resources.getStage();
 		stage.addActor(retryButton);
 		Gdx.input.setInputProcessor(stage);
 	}
@@ -84,7 +86,7 @@ public class graphVisualiser extends ApplicationAdapter {
 	@Override
 	public void render() {
 		if(Gdx.input.isKeyJustPressed(Keys.Q)) Gdx.app.exit();
-		if(Gdx.input.isKeyJustPressed(Keys.SPACE)) graph = createGraph();
+		if(Gdx.input.isKeyJustPressed(Keys.SPACE)) {graph = createGraph(); resources.setGraph(graph);};
 		if(Gdx.input.isKeyJustPressed(Keys.C)) graph.clearGraph();
 		ScreenUtils.clear(Color.BLACK);
 
@@ -93,15 +95,15 @@ public class graphVisualiser extends ApplicationAdapter {
 		
 		graph.draw();
 		
-		graph.getBatch().begin();
-		graph.getFont().draw(graph.getBatch(), "FPS: " + Gdx.graphics.getFramesPerSecond(), Gdx.graphics.getWidth() - 70, Gdx.graphics.getHeight() - 15);
-		graph.getBatch().end();
+		Resources.getBatch().begin();
+		Resources.getFont().draw(resources.getBatch(), "FPS: " + Gdx.graphics.getFramesPerSecond(), Gdx.graphics.getWidth() - 70, Gdx.graphics.getHeight() - 15);
+		Resources.getBatch().end();
 		
 	}
 
 	@Override
 	public void dispose() {
-		graph.getBatch().dispose();
-		graph.getShapeRenderer().dispose();
+		resources.getBatch().dispose();
+		resources.getSr().dispose();
 	}
 }

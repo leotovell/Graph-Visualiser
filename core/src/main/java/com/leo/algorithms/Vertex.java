@@ -55,7 +55,7 @@ public class Vertex {
 
 	public void removeEdge(Vertex destination) {
 		this.edgeList.removeIf(edge -> edge.getEndVertex().equals(destination));
-		// Clever -> method
+		// Removes edge if the destination of that edge is equal to the destination we want.
 	}
 
 	public boolean hasCoords() {
@@ -139,6 +139,11 @@ public class Vertex {
 
 	public void setRadius(int radius) {
 		this.radius = radius;
+	}
+
+	public void setPosition(int x, int y) {
+		this.x = x;
+		this.y = y;
 	}
 
 }
