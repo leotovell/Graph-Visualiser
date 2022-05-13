@@ -28,10 +28,8 @@ public class Graph {
 	private LButton addVertexButton, addEdgeButton, removeVertexButton, removeEdgeButton;
 	private ArrayList<LButton> editButtons;
 	private BitmapFont font;
-	private boolean addVertexToggle, addEdgeToggle, removeVertexToggle, removeEdgeToggle;
 	private int WINDOW_WIDTH, WINDOW_HEIGHT, VERTEX_RADIUS;
 	private Random r;
-	private LButton lastButtonPressed = null;
 	private boolean[] buttonToggles = {false, false, false, false};
 	private Vertex toRemove = null;
 	private Vertex addSource, addDestination, edgeSource, edgeDestination;
@@ -44,7 +42,6 @@ public class Graph {
 		font = new BitmapFont();
 		font = new BitmapFont();
 		font.setColor(Color.WHITE);
-		addVertexToggle = addEdgeToggle = removeVertexToggle = removeEdgeToggle = false;
 		WINDOW_WIDTH = Gdx.graphics.getWidth();
 		WINDOW_HEIGHT = Gdx.graphics.getHeight();
 		VERTEX_RADIUS = 15;
@@ -217,10 +214,6 @@ public class Graph {
 		//Try both - quick get around to doing validation
 	}
 	
-	public ArrayList<Vertex> getVertexes(){
-		return this.vertexList;
-	}
-	
 	public void clearGraph() {
 		this.getVertexes().clear();
 	}
@@ -332,5 +325,7 @@ public class Graph {
 		return editButtons;
 	}
 	
-	
+	public ArrayList<Vertex> getVertexes(){
+		return this.vertexList;
+	}
 }

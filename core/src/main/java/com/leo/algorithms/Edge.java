@@ -35,7 +35,8 @@ public class Edge {
 	public void draw(ShapeRenderer sr) {
 		sr.begin(ShapeType.Filled);
 		sr.setColor(Color.WHITE);
-		sr.line(this.start.getX(), this.start.getY(), this.end.getX(), this.end.getY());
+		//sr.line(this.start.getX(), this.start.getY(), this.end.getX(), this.end.getY());
+		sr.rectLine(this.start.getX(), this.start.getY(), this.end.getX(), this.end.getY(), 5);
 		sr.end();
 	}
 	

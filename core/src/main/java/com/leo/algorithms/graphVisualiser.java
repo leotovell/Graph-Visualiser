@@ -37,18 +37,20 @@ public class graphVisualiser extends ApplicationAdapter {
 	private int fps;
 
 
-	public Graph createGraph(Random r) {
+	public Graph createGraph() {
 		graph = new Graph("My Graph");
 		return graph;
 	}
 
 	@Override
 	public void create() {
+		
+		Gdx.graphics.setFullscreenMode(Gdx.graphics.getDisplayMode());
 
 		r = new Random();
 		WINDOW_WIDTH = Gdx.graphics.getWidth();
 		WINDOW_HEIGHT = Gdx.graphics.getHeight();
-		graph = createGraph(r);
+		graph = createGraph();
 		fps = Gdx.graphics.getFramesPerSecond();
 
 		TextFieldStyle textFieldStyle = new TextFieldStyle();
@@ -70,7 +72,7 @@ public class graphVisualiser extends ApplicationAdapter {
 		retryButton.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				graph = createGraph(r);
+				graph = createGraph();
 			}
 		});
 
@@ -82,9 +84,8 @@ public class graphVisualiser extends ApplicationAdapter {
 	@Override
 	public void render() {
 		if(Gdx.input.isKeyJustPressed(Keys.Q)) Gdx.app.exit();
-		if(Gdx.input.isKeyJustPressed(Keys.SPACE)) graph = createGraph(r);
+		if(Gdx.input.isKeyJustPressed(Keys.SPACE)) graph = createGraph();
 		if(Gdx.input.isKeyJustPressed(Keys.C)) graph.clearGraph();
-		if(Gdx.input.isButtonJustPressed(Buttons.LEFT)) {System.out.println(Gdx.input.getX()); System.out.println(Gdx.graphics.getHeight() - Gdx.input.getY());};
 		ScreenUtils.clear(Color.BLACK);
 
 		stage.act(Gdx.graphics.getDeltaTime());
@@ -95,12 +96,6 @@ public class graphVisualiser extends ApplicationAdapter {
 		graph.getBatch().begin();
 		graph.getFont().draw(graph.getBatch(), "FPS: " + Gdx.graphics.getFramesPerSecond(), Gdx.graphics.getWidth() - 70, Gdx.graphics.getHeight() - 15);
 		graph.getBatch().end();
-		
-		graph.getShapeRenderer().begin(ShapeType.Filled);
-		graph.getShapeRenderer().setColor(Color.YELLOW);
-		graph.getShapeRenderer().circle(200, 200, 2);
-		graph.getShapeRenderer().end();
-		
 		
 	}
 

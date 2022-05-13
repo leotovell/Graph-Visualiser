@@ -37,11 +37,13 @@ public class Vertex {
 			System.out.println("Cannot create edge to self!");
 			skipCreation = true;
 		}
-			
-		for(Edge edge: this.getEdges()) {
-			if((edge.getStartVertex() == this && edge.getEndVertex() == destination) || (edge.getEndVertex() == this && edge.getStartVertex() == destination)) {
-				System.out.println("Edge already exists in non-directional graph!");
-				skipCreation = true;
+		
+		for(Vertex vertex: allVertices) {
+			for(Edge edge: vertex.getEdges()) {
+				if((edge.getStartVertex() == this && edge.getEndVertex() == destination) | (edge.getEndVertex() == this && edge.getStartVertex() == destination)) {
+					System.out.println("Edge already exists in non-directional graph!");
+					skipCreation = true;
+				}
 			}
 		}
 		
@@ -56,6 +58,57 @@ public class Vertex {
 		// Clever -> method
 	}
 
+	public boolean hasCoords() {
+		boolean xExists = false;
+		boolean yExists = false;
+		if(!(Objects.isNull(this.x))) xExists = true; //If X ISNT null
+		if(!(Objects.isNull(this.y))) yExists = true; //If Y ISNT null
+		return xExists & yExists;
+	}
+
+	public void draw(ShapeRenderer sr, BitmapFont font, Batch batch) {
+		
+		sr.begin(ShapeType.Filled);
+		sr.setColor(this.color);
+		sr.circle(this.x, this.y, this.radius);
+		sr.end();
+
+		/*
+		GlyphLayout text = new GlyphLayout(font, this.name);
+		float fontX = (this.x - (text.width /2));
+		float fontY = (this.y + (text.height /2));
+
+		batch.begin();
+		font.draw(batch, text, fontX, fontY);
+		batch.end();
+		*/
+	
+	}
+
+	public void checkDragged() {
+		mouseX = Gdx.input.getX();
+		mouseY = Gdx.graphics.getHeight() - Gdx.input.getY();
+
+		int dx = (int) (mouseX - this.x);
+		int dy = (int) (mouseY - this.y);
+		distance = (int) (Math.hypot(dx,  dy));
+
+		if(Gdx.input.isButtonPressed(Buttons.LEFT) & (distance < this.radius)) {
+			this.setX(x + Gdx.input.getDeltaX());
+			this.setY(y - Gdx.input.getDeltaY());
+		}
+	}
+	
+	public boolean checkClicked() {
+		boolean clicked = false;
+		if(Gdx.input.isButtonJustPressed(Buttons.LEFT) & (distance < this.radius)) clicked = true;
+		return clicked;
+	}
+	
+	public void setColor(Color color) {
+		this.color = color;
+	}
+	
 	public ArrayList<Edge> getEdges(){
 		return edgeList;
 	}
@@ -88,52 +141,4 @@ public class Vertex {
 		this.radius = radius;
 	}
 
-	public boolean hasCoords() {
-		boolean xExists = false;
-		boolean yExists = false;
-		if(!(Objects.isNull(this.x))) xExists = true; //If X ISNT null
-		if(!(Objects.isNull(this.y))) yExists = true; //If Y ISNT null
-		return xExists & yExists;
-	}
-
-	public void draw(ShapeRenderer sr, BitmapFont font, Batch batch) {
-		
-		sr.begin(ShapeType.Filled);
-		sr.setColor(this.color);
-		sr.circle(this.x, this.y, this.radius);
-		sr.end();
-
-		GlyphLayout text = new GlyphLayout(font, this.name);
-		float fontX = (this.x - (text.width /2));
-		float fontY = (this.y + (text.height /2));
-
-		batch.begin();
-		font.draw(batch, text, fontX, fontY);
-		batch.end();
-		
-	}
-
-	public void checkDragged() {
-		mouseX = Gdx.input.getX();
-		mouseY = Gdx.graphics.getHeight() - Gdx.input.getY();
-
-		int dx = (int) (mouseX - this.x);
-		int dy = (int) (mouseY - this.y);
-		distance = (int) (Math.hypot(dx,  dy));
-
-		if(Gdx.input.isButtonPressed(Buttons.LEFT) & (distance < this.radius)) {
-			this.setX(x + Gdx.input.getDeltaX());
-			this.setY(y - Gdx.input.getDeltaY());
-		}
-	}
-	
-	public boolean checkClicked() {
-		boolean clicked = false;
-		if(Gdx.input.isButtonJustPressed(Buttons.LEFT) & (distance < this.radius)) clicked = true;
-		return clicked;
-	}
-	
-	public void setColor(Color color) {
-		this.color = color;
-	}
 }
