@@ -53,7 +53,7 @@ public class LButton {
 		this.colorHover = Color.GRAY;
 		this.clickedColor = Color.BROWN;
 		
-		this.font = new BitmapFont();
+		this.font = Resources.font;
 		this.font.getData().setScale(DEFAULT_FONT_SIZE);
 		this.font.setColor(Color.BLACK);
 		

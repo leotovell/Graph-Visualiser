@@ -11,6 +11,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
+import com.leo.algorithms.Assets.Resources;
 
 /*
  * TODO: 
@@ -57,6 +58,21 @@ public class Vertex {
 		this.edgeList.removeIf(edge -> edge.getEndVertex().equals(destination));
 		// Removes edge if the destination of that edge is equal to the destination we want.
 	}
+	
+	public ArrayList<Vertex> getNeighbours() {
+		ArrayList<Vertex> neighbours = new ArrayList<>();
+		for(Edge edge: this.getEdges()) {
+			neighbours.add(edge.getEndVertex());
+		}
+		for(Vertex i: Resources.graph.getVertexes()) {
+			for(Edge edge: i.getEdges()) {
+				if(edge.getEndVertex() == this) {
+					neighbours.add(i);
+				}
+			}
+		}
+		return neighbours;
+	}
 
 	public boolean hasCoords() {
 		boolean xExists = false;
@@ -73,7 +89,7 @@ public class Vertex {
 		sr.circle(this.x, this.y, this.radius);
 		sr.end();
 
-		/*
+		
 		GlyphLayout text = new GlyphLayout(font, this.name);
 		float fontX = (this.x - (text.width /2));
 		float fontY = (this.y + (text.height /2));
@@ -81,7 +97,7 @@ public class Vertex {
 		batch.begin();
 		font.draw(batch, text, fontX, fontY);
 		batch.end();
-		*/
+		
 	
 	}
 
@@ -144,6 +160,10 @@ public class Vertex {
 	public void setPosition(int x, int y) {
 		this.x = x;
 		this.y = y;
+	}
+	
+	public Color getColor() {
+		return this.color;
 	}
 
 }

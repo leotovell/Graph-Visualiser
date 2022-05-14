@@ -47,7 +47,7 @@ public class graphVisualiser extends ApplicationAdapter {
 	@Override
 	public void create() {
 		
-		Gdx.graphics.setFullscreenMode(Gdx.graphics.getDisplayMode());
+		//Gdx.graphics.setFullscreenMode(Gdx.graphics.getDisplayMode());
 		resources = new Resources();
 
 		r = new Random();

@@ -2,7 +2,9 @@ package com.leo.algorithms;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Random;
 
@@ -18,6 +20,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.leo.algorithms.Assets.LButton;
+import com.leo.algorithms.Assets.LExpandableMenu;
 import com.leo.algorithms.Assets.Resources;
 
 
@@ -28,12 +31,26 @@ public class Graph {
 	ShapeRenderer sr;
 	SpriteBatch batch;
 	Stage stage;
-	private LButton addVertexButton, addEdgeButton, removeVertexButton, removeEdgeButton;
+	private LButton 
+	addVertexButton, 
+	addEdgeButton, 
+	removeVertexButton, 
+	removeEdgeButton, 
+	functionButton, 
+	vertexInfoButton, 
+	resetColorsButton, 
+	getAllNeighboursButton;
+	
+	private LExpandableMenu
+	functionButtonMenu,
+	debugButtonMenu;
+	
 	private ArrayList<LButton> editButtons;
+	private ArrayList<LExpandableMenu> UIMenus;
 	private BitmapFont font;
 	private int VERTEX_RADIUS;
 	private Random r;
-	private boolean[] buttonToggles = {false, false, false, false};
+	private boolean[] buttonToggles = {false, false, false, false, false, false, false, false};
 	private Vertex toRemove = null;
 	private Vertex addSource, addDestination, edgeSource, edgeDestination;
 	
@@ -53,6 +70,12 @@ public class Graph {
 	}
 	
 	public void createUI() {
+		functionButtonMenu = new LExpandableMenu(0, Gdx.graphics.getHeight(), 200, 250, Color.CHARTREUSE);
+		functionButtonMenu.setTitle("Functions");
+		
+		debugButtonMenu = new LExpandableMenu(0, Gdx.graphics.getHeight() - 300, 200, 250, Color.CHARTREUSE);
+		debugButtonMenu.setTitle("Debug");
+		
 		addVertexButton = new LButton("Add Vertex", Gdx.graphics.getWidth()-520, 10, 120, 30, Color.WHITE, ShapeType.Filled);
 		addVertexButton.setClickedColor(Color.GREEN);
 
@@ -65,11 +88,31 @@ public class Graph {
 		removeEdgeButton = new LButton("Remove Edge", Gdx.graphics.getWidth()-130, 10, 120, 30, Color.WHITE, ShapeType.Filled);
 		removeEdgeButton.setClickedColor(Color.RED);
 		
+		functionButton = new LButton("Highlight Neighbours", Gdx.graphics.getWidth()-650, 10, 120, 30, Color.WHITE, ShapeType.Filled);
+		functionButton.setClickedColor(Color.PURPLE);
+		
+		vertexInfoButton = new LButton("Vertex Info", Gdx.graphics.getWidth()-780, 10, 120, 30, Color.WHITE, ShapeType.Filled);
+		vertexInfoButton.setClickedColor(Color.BLUE);
+		
+		resetColorsButton = new LButton("Reset Colours", Gdx.graphics.getWidth()-910, 10, 120, 30, Color.WHITE, ShapeType.Filled);
+		resetColorsButton.setClickedColor(Color.BLUE);
+		
+		getAllNeighboursButton = new LButton("Print All Neighbours", Gdx.graphics.getWidth()-1040, 10, 120, 30, Color.WHITE, ShapeType.Filled);
+		getAllNeighboursButton.setClickedColor(Color.BLUE);
+		
 		editButtons = new ArrayList<>();
 		editButtons.add(addVertexButton);
 		editButtons.add(addEdgeButton);
 		editButtons.add(removeVertexButton);
 		editButtons.add(removeEdgeButton);
+		editButtons.add(functionButton);
+		editButtons.add(vertexInfoButton);
+		editButtons.add(resetColorsButton);
+		editButtons.add(getAllNeighboursButton);
+		
+		UIMenus = new ArrayList<>();
+		UIMenus.add(functionButtonMenu);
+		UIMenus.add(debugButtonMenu);
 	}
 	
 	public void createDefaultVertices() {
@@ -220,6 +263,28 @@ public class Graph {
 		this.getVertexes().clear();
 	}
 	
+	public HashMap<Vertex, ArrayList<Vertex>> getAllNeighbours() { //NEEDS FIXING
+		HashMap<Vertex, ArrayList<Vertex>> allNeighbours = new HashMap<>();
+		for(Vertex i: this.getVertexes()) {
+			ArrayList<Vertex> neighbours = new ArrayList<>();
+			for(Edge edge: i.getEdges()) {
+				neighbours.add(i);
+			}
+			for(Vertex j: this.getVertexes()) {
+				for(Edge edge: j.getEdges()) {
+					if(edge.getEndVertex() == i) {
+						if(!(neighbours.contains(j))) {
+						neighbours.add(j);
+						}
+					}
+				}
+			}
+			allNeighbours.put(i, neighbours);
+		}
+		return allNeighbours;
+		
+	}
+	
 	public void draw() {
 		// Calls update on all elements before drawing.
 		this.update();
@@ -236,6 +301,11 @@ public class Graph {
 		// Draws the menu buttons
 		for(LButton button: editButtons) {
 			button.draw(sr, batch, editButtons);
+		}
+		
+		// Draws the menus
+		for(LExpandableMenu menu: UIMenus) {
+			menu.draw(sr, batch);
 		}
 		
 		// Draws the Vertices
@@ -300,7 +370,47 @@ public class Graph {
 					edgeSource.setColor(Color.FIREBRICK);
 					edgeDestination.setColor(Color.FIREBRICK);
 					edgeSource = edgeDestination = null;
-				}}}
+				}}
+			
+			else if(buttonToggles[4]) {
+				if(vertex.checkClicked()) {
+					for(Vertex i: vertex.getNeighbours()) {
+						i.setColor(Color.BLUE);
+					}
+					vertex.setColor(Color.FIREBRICK);	
+				}
+			}
+			
+			else if(buttonToggles[5]) { //Print info
+				if(vertex.checkClicked()) {
+					System.out.println("---------------");
+					System.out.println("Vertex: '" + vertex.getName() + "' Information");
+					System.out.println("X, Y: " + Integer.toString(vertex.getX()) + ", " + Integer.toString(vertex.getY()));
+					System.out.println("Color: " + vertex.getColor().toString());
+					System.out.println("--- Edges ---");
+					for(Edge edge: vertex.getEdges()) {
+						System.out.println(edge);
+					}
+				}
+			}
+			
+			else if(buttonToggles[6]) {
+				vertex.setColor(Color.FIREBRICK);
+				resetColorsButton.setToggled(false);
+			}
+			
+			else if(buttonToggles[7]) {
+				HashMap<Vertex, ArrayList<Vertex>> neighbourMap = getAllNeighbours();
+				neighbourMap.entrySet().forEach(entry ->{
+					System.out.println("-----------------");
+					System.out.println(entry.getKey().getName() + " Neighbours:");
+					for(Vertex v: entry.getValue()) {
+						System.out.println(v.getName());
+					}
+				});
+				getAllNeighboursButton.setToggled(false);
+			}
+		}
 
 		// Removes vertices as added above.
 		if(toRemove != null) this.removeVertex(toRemove);;	
