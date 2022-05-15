@@ -1,6 +1,5 @@
 package com.leo.algorithms.Assets;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -20,7 +19,6 @@ public class Resources {
 	public static BitmapFont font;
 	public static Stage stage;
 	public static Graph graph;
-	//public static int WINDOW_HEIGHT, WINDOW_WIDTH;
 	
 	public Resources() {
 		sr = new ShapeRenderer();
@@ -51,8 +49,8 @@ public class Resources {
 		return graph;
 	}
 	
-	public void setGraph(Graph g) {
-		this.graph = g;
+	public static void setGraph(Graph g) {
+		graph = g;
 	}
 	
 	

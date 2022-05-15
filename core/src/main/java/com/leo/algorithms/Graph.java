@@ -1,26 +1,20 @@
 package com.leo.algorithms;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Random;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
-import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.leo.algorithms.Assets.LButton;
 import com.leo.algorithms.Assets.LExpandableMenu;
+import com.leo.algorithms.Assets.LMenuGroup;
 import com.leo.algorithms.Assets.Resources;
 
 
@@ -46,16 +40,17 @@ public class Graph {
 	debugButtonMenu;
 	
 	private ArrayList<LButton> editButtons;
-	private ArrayList<LExpandableMenu> UIMenus;
+	private LMenuGroup UIMenus;
 	private BitmapFont font;
 	private int VERTEX_RADIUS;
 	private Random r;
 	private boolean[] buttonToggles = {false, false, false, false, false, false, false, false};
-	private Vertex toRemove = null;
 	private Vertex addSource, addDestination, edgeSource, edgeDestination;
 	
 	public Graph(String name) {
 		this.name = name;
+		@SuppressWarnings("unused")
+		Resources resources = new Resources();
 		sr = Resources.sr;
 		batch = Resources.batch;
 		stage = Resources.stage;
@@ -70,10 +65,10 @@ public class Graph {
 	}
 	
 	public void createUI() {
-		functionButtonMenu = new LExpandableMenu(0, Gdx.graphics.getHeight(), 200, 250, Color.CHARTREUSE);
+		functionButtonMenu = new LExpandableMenu(0, Gdx.graphics.getHeight(), 200, 250, Color.BLUE);
 		functionButtonMenu.setTitle("Functions");
 		
-		debugButtonMenu = new LExpandableMenu(0, Gdx.graphics.getHeight() - 300, 200, 250, Color.CHARTREUSE);
+		debugButtonMenu = new LExpandableMenu(0, Gdx.graphics.getHeight() - 300, 200, 250, Color.BLUE);
 		debugButtonMenu.setTitle("Debug");
 		
 		addVertexButton = new LButton("Add Vertex", Gdx.graphics.getWidth()-520, 10, 120, 30, Color.WHITE, ShapeType.Filled);
@@ -110,9 +105,9 @@ public class Graph {
 		editButtons.add(resetColorsButton);
 		editButtons.add(getAllNeighboursButton);
 		
-		UIMenus = new ArrayList<>();
-		UIMenus.add(functionButtonMenu);
-		UIMenus.add(debugButtonMenu);
+		UIMenus = new LMenuGroup();
+		UIMenus.addMenu(functionButtonMenu);
+		UIMenus.addMenu(debugButtonMenu);
 	}
 	
 	public void createDefaultVertices() {
@@ -268,7 +263,7 @@ public class Graph {
 		for(Vertex i: this.getVertexes()) {
 			ArrayList<Vertex> neighbours = new ArrayList<>();
 			for(Edge edge: i.getEdges()) {
-				neighbours.add(i);
+				neighbours.add(edge.getStartVertex());
 			}
 			for(Vertex j: this.getVertexes()) {
 				for(Edge edge: j.getEdges()) {
@@ -304,9 +299,7 @@ public class Graph {
 		}
 		
 		// Draws the menus
-		for(LExpandableMenu menu: UIMenus) {
-			menu.draw(sr, batch);
-		}
+		UIMenus.render(Resources.sr, Resources.batch);
 		
 		// Draws the Vertices
 		for(Vertex vertex: this.getVertexes()) {
@@ -327,8 +320,8 @@ public class Graph {
 		for(Vertex vertex: this.getVertexes()) {
 			vertex.checkDragged();
 		}
-			
-		boolean toAdd = false;
+		
+		UIMenus.update();
 	
 		// Add Vertex method
 		if(buttonToggles[0]) {
@@ -396,7 +389,7 @@ public class Graph {
 			
 			else if(buttonToggles[6]) {
 				vertex.setColor(Color.FIREBRICK);
-				resetColorsButton.setToggled(false);
+				resetColorsButton.setToggled(false); //Make click button (not toggle)
 			}
 			
 			else if(buttonToggles[7]) {
@@ -408,7 +401,7 @@ public class Graph {
 						System.out.println(v.getName());
 					}
 				});
-				getAllNeighboursButton.setToggled(false);
+				getAllNeighboursButton.setToggled(false); //Make click button (not toggle)
 			}
 		}
 
@@ -417,18 +410,6 @@ public class Graph {
 	}
 	
 	// Getters/Setters
-	
-	public BitmapFont getFont() {
-		return font;
-	}
-	
-	public SpriteBatch getBatch() {
-		return batch;
-	}
-	
-	public ShapeRenderer getShapeRenderer() {
-		return sr;
-	}
 	
 	public ArrayList<LButton> getEditButtons(){
 		return editButtons;

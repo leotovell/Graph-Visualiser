@@ -68,9 +68,7 @@ public class Vertex {
 			for(Edge edge: i.getEdges()) {
 				if(edge.getEndVertex() == this) {
 					neighbours.add(i);
-				}
-			}
-		}
+				}}}
 		return neighbours;
 	}
 
@@ -89,7 +87,6 @@ public class Vertex {
 		sr.circle(this.x, this.y, this.radius);
 		sr.end();
 
-		
 		GlyphLayout text = new GlyphLayout(font, this.name);
 		float fontX = (this.x - (text.width /2));
 		float fontY = (this.y + (text.height /2));
@@ -97,8 +94,6 @@ public class Vertex {
 		batch.begin();
 		font.draw(batch, text, fontX, fontY);
 		batch.end();
-		
-	
 	}
 
 	public void checkDragged() {
@@ -112,8 +107,7 @@ public class Vertex {
 		if(Gdx.input.isButtonPressed(Buttons.LEFT) & (distance < this.radius)) {
 			this.setX(x + Gdx.input.getDeltaX());
 			this.setY(y - Gdx.input.getDeltaY());
-		}
-	}
+		}}
 	
 	public boolean checkClicked() {
 		boolean clicked = false;
@@ -165,5 +159,4 @@ public class Vertex {
 	public Color getColor() {
 		return this.color;
 	}
-
 }

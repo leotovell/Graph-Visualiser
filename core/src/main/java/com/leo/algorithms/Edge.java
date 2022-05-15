@@ -1,7 +1,5 @@
 package com.leo.algorithms;
 
-import java.util.Vector;
-
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
