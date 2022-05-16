@@ -94,6 +94,9 @@ public class Graph {
 		
 		getAllNeighboursButton = new LButton("Print All Neighbours", Gdx.graphics.getWidth()-1040, 10, 120, 30, Color.WHITE, ShapeType.Filled);
 		getAllNeighboursButton.setClickedColor(Color.BLUE);
+
+		functionButtonMenu.addElements(addVertexButton, addEdgeButton, removeVertexButton, removeEdgeButton);
+		debugButtonMenu.addElements(functionButton, vertexInfoButton, resetColorsButton, getAllNeighboursButton);
 		
 		editButtons = new ArrayList<>();
 		editButtons.add(addVertexButton);
@@ -294,9 +297,9 @@ public class Graph {
 		stage.draw();
 		
 		// Draws the menu buttons
-		for(LButton button: editButtons) {
-			button.draw(sr, batch, editButtons);
-		}
+//		for(LButton button: editButtons) {
+//			button.draw(sr, batch, editButtons);
+//		}
 		
 		// Draws the menus
 		UIMenus.render(Resources.sr, Resources.batch);

@@ -19,13 +19,15 @@ public class LExpandableMenu {
 	int tabLeftSide, tabRightSide, tabTop, tabBottom;
 	Color backgroundColor, tabColor;
 	
+	int buttonGap = 10; //px
+	
 	String title = "Default";
 	
 	boolean moving = false;
 	boolean expanded = false;
 	boolean direction; // FALSE: UP | TRUE: DOWN
 	
-	ArrayList<Object> elementList = new ArrayList<>();
+	ArrayList<LButton> elementList = new ArrayList<>();
 
 	public LExpandableMenu(int x, int y, int width, int height, Color color) {
 		this.x = x;
@@ -65,15 +67,19 @@ public class LExpandableMenu {
 		Resources.sr.rect(x, y-height, width, height);
 		Resources.sr.end();
 		
-//		GlyphLayout layout = new GlyphLayout(Resources.font, this.title);
-		
-		GlyphLayout tabLetter = new GlyphLayout(Resources.font, String.valueOf(this.title.charAt(0)));
-		float tabFontX = (tabX + (tabWidth - tabLetter.width) /2);
-		float tabFontY = (tabY + (tabHeight + tabLetter.height) /2);
+		GlyphLayout titleLayout = new GlyphLayout(Resources.font, this.title);
+		float titleX = (tabX + (tabWidth - titleLayout.width) /2);
+		float titleY = (tabY + (tabHeight + titleLayout.height) /2);
 		
 		batch.begin();
-		Resources.font.draw(batch, tabLetter, tabFontX, tabFontY);
+		Resources.font.draw(batch, titleLayout, titleX, titleY);
 		batch.end();
+		
+		if(this.expanded && !(moving)) {
+			for(LButton button: elementList) {
+				button.draw(sr, batch, Resources.graph.getEditButtons());
+			}
+		}
 	}
 	
 	public void update() {
@@ -114,10 +120,6 @@ public class LExpandableMenu {
 		return false;
 	}
 	
-	public void changeState() {
-		
-	};
-	
 	public void animate() {
 		if(direction) {
 			height ++;
@@ -125,7 +127,27 @@ public class LExpandableMenu {
 		else height--;
 	};
 	
-	public void addElements(ArrayList<Object> elements) {
+	public void addElements(LButton... elementsToAdd) {
+		for(LButton element: elementsToAdd) {
+			elementList.add(element);
+		}
+		
+		this.updateButtonPositions();
+		
+	}
+	
+	public void updateButtonPositions() {
+		if(elementList.size() > 0) {
+			for(int i = 0; i < elementList.size(); i++) {
+				elementList.get(i).setDimensions(elementList.get(0).getDimensions()[0], elementList.get(0).getDimensions()[1]);
+				int buttonX = this.x + (this.width - elementList.get(i).getDimensions()[0]) /2;
+				int buttonY = this.y - tabHeight - this.buttonGap - ((elementList.get(i).getDimensions()[1] + this.buttonGap) * (i + 1));
+				elementList.get(i).setPosition(buttonX, buttonY);
+			}
+			
+		originalHeight = tabHeight + (this.buttonGap * 3) + ((elementList.get(0).getDimensions()[1] + this.buttonGap) * elementList.size());
+		
+		}
 	}
 	
 	public void setTitle(String title) {

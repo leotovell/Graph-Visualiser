@@ -18,6 +18,7 @@ public class LMenuGroup {
 			if(i < 1 && elements.size() > 1) i = 1;
 			LExpandableMenu previousMenu = elements.get(i -1);
 			elements.get(i).setPosition(previousMenu.getPosition()[0], (previousMenu.getPosition()[1] - previousMenu.getDimensions()[1]));
+			elements.get(i).updateButtonPositions();
 		}
 	}
 	
