@@ -33,18 +33,21 @@ public class Graph {
 	functionButton, 
 	vertexInfoButton, 
 	resetColorsButton, 
-	getAllNeighboursButton;
+	getAllNeighboursButton,
+	kruskalsAlgorithmButton,
+	DijkstrasAlgorithmButton;
 	
 	private LExpandableMenu
 	functionButtonMenu,
-	debugButtonMenu;
+	debugButtonMenu,
+	algorithmButtonMenu;
 	
 	private ArrayList<LButton> editButtons;
 	private LMenuGroup UIMenus;
 	private BitmapFont font;
 	private int VERTEX_RADIUS;
 	private Random r;
-	private boolean[] buttonToggles = {false, false, false, false, false, false, false, false};
+	private boolean[] buttonToggles = {false, false, false, false, false, false, false, false, false, false};
 	private Vertex addSource, addDestination, edgeSource, edgeDestination;
 	
 	public Graph(String name) {
@@ -71,6 +74,9 @@ public class Graph {
 		debugButtonMenu = new LExpandableMenu(0, Gdx.graphics.getHeight() - 300, 200, 250, Color.BLUE);
 		debugButtonMenu.setTitle("Debug");
 		
+		algorithmButtonMenu = new LExpandableMenu(0, Gdx.graphics.getHeight() - 600, 200, 250, Color.BLUE);
+		algorithmButtonMenu.setTitle("Algorithms");
+		
 		addVertexButton = new LButton("Add Vertex", Gdx.graphics.getWidth()-520, 10, 120, 30, Color.WHITE, ShapeType.Filled);
 		addVertexButton.setClickedColor(Color.GREEN);
 
@@ -83,7 +89,7 @@ public class Graph {
 		removeEdgeButton = new LButton("Remove Edge", Gdx.graphics.getWidth()-130, 10, 120, 30, Color.WHITE, ShapeType.Filled);
 		removeEdgeButton.setClickedColor(Color.RED);
 		
-		functionButton = new LButton("Highlight Neighbours", Gdx.graphics.getWidth()-650, 10, 120, 30, Color.WHITE, ShapeType.Filled);
+		functionButton = new LButton("Highlight Neighbours", Gdx.graphics.getWidth()-650, 10, 150, 30, Color.WHITE, ShapeType.Filled);
 		functionButton.setClickedColor(Color.PURPLE);
 		
 		vertexInfoButton = new LButton("Vertex Info", Gdx.graphics.getWidth()-780, 10, 120, 30, Color.WHITE, ShapeType.Filled);
@@ -94,9 +100,16 @@ public class Graph {
 		
 		getAllNeighboursButton = new LButton("Print All Neighbours", Gdx.graphics.getWidth()-1040, 10, 120, 30, Color.WHITE, ShapeType.Filled);
 		getAllNeighboursButton.setClickedColor(Color.BLUE);
+		
+		kruskalsAlgorithmButton = new LButton("'Kruskals'", 0, 0, 120, 30, Color.WHITE, ShapeType.Filled);
+		kruskalsAlgorithmButton.setClickedColor(Color.BLUE);
+		
+		DijkstrasAlgorithmButton = new LButton("'Dijkstras'", 0, 0, 120, 30, Color.WHITE, ShapeType.Filled);
+		DijkstrasAlgorithmButton.setClickedColor(Color.BLUE);
 
 		functionButtonMenu.addElements(addVertexButton, addEdgeButton, removeVertexButton, removeEdgeButton);
 		debugButtonMenu.addElements(functionButton, vertexInfoButton, resetColorsButton, getAllNeighboursButton);
+		algorithmButtonMenu.addElements(kruskalsAlgorithmButton, DijkstrasAlgorithmButton);
 		
 		editButtons = new ArrayList<>();
 		editButtons.add(addVertexButton);
@@ -107,9 +120,12 @@ public class Graph {
 		editButtons.add(vertexInfoButton);
 		editButtons.add(resetColorsButton);
 		editButtons.add(getAllNeighboursButton);
+		editButtons.add(kruskalsAlgorithmButton);
+		editButtons.add(DijkstrasAlgorithmButton);
 		
 		UIMenus = new LMenuGroup();
 		UIMenus.addMenu(functionButtonMenu);
+		UIMenus.addMenu(algorithmButtonMenu);
 		UIMenus.addMenu(debugButtonMenu);
 	}
 	
@@ -141,7 +157,7 @@ public class Graph {
 				x = r.nextInt(Gdx.graphics.getWidth() - 40) + 20;
 				y = r.nextInt(Gdx.graphics.getHeight() - 80) + 60;
 			}
-			
+
 			vertex.setX(x);
 			vertex.setY(y);
 			vertex.setRadius(VERTEX_RADIUS);
