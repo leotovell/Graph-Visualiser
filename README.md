@@ -13,4 +13,4 @@ I eventually want to make this a graphing tool with different algorithms and so.
 #### Current Version
 Finished drop-down for UI. They automatically reposition and resize depending on contents.
 
-https://github.com/LeoTovell/Graph-Visualiser/blob/main/pic/160522.png
+![alt text](https://github.com/LeoTovell/Graph-Visualiser/blob/main/pic/160522.png)
