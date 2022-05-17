@@ -1,6 +1,8 @@
 package com.leo.algorithms.Assets;
 
 import java.util.ArrayList;
+
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 
@@ -23,11 +25,18 @@ public class LMenuGroup {
 	}
 	
 	public void render(ShapeRenderer sr, SpriteBatch batch) {
-		for(LExpandableMenu menu: elements) menu.draw(sr, batch);
+		for(LExpandableMenu menu: elements) {
+			menu.font.setColor(Color.WHITE);
+			menu.draw(sr, batch);
+		}
 	}
 	
 	public void addMenu(LExpandableMenu menu) {
 		elements.add(menu);
+	}
+	
+	public ArrayList<LExpandableMenu> getMenus(){
+		return elements;
 	}
 	
 }

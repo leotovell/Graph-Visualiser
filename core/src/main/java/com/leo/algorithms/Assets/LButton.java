@@ -50,10 +50,10 @@ public class LButton {
 		this.shapetype = shapetype;
 		this.colorHover = Color.GRAY;
 		this.clickedColor = Color.BROWN;
+		this.fontColor = Color.BLACK;
 		
 		this.font = Resources.font;
-		this.font.getData().setScale(DEFAULT_FONT_SIZE);
-		this.font.setColor(Color.BLACK);
+		this.font.setColor(fontColor);
 		
 		}
 	
@@ -103,6 +103,7 @@ public class LButton {
 		float fontX = x + (width - layout.width) / 2;
 		float fontY = y + (height + layout.height) / 2;
 		
+		font.setColor(Color.BLACK);
 		batch.begin();
 		font.draw(batch, layout, fontX, fontY);
 		batch.end();
@@ -116,14 +117,8 @@ public class LButton {
 		}
 	}
 	
-	public void setFont(String filepath, Color color) {
-		try {
-			this.fontColor = color;
-								
-		}
-		catch(Exception e){
-			//e.printStackTrace();
-		}
+	public void setFontColor(Color color) {
+		this.fontColor = color;
 	}
 	
 	public void setColor(Color color) {

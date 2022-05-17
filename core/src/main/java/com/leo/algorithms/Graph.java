@@ -12,6 +12,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.leo.algorithms.Algorithm.DijkstrasAlgorithm;
 import com.leo.algorithms.Assets.LButton;
 import com.leo.algorithms.Assets.LExpandableMenu;
 import com.leo.algorithms.Assets.LMenuGroup;
@@ -48,7 +49,7 @@ public class Graph {
 	private int VERTEX_RADIUS;
 	private Random r;
 	private boolean[] buttonToggles = {false, false, false, false, false, false, false, false, false, false};
-	private Vertex addSource, addDestination, edgeSource, edgeDestination;
+	private Vertex addSource, addDestination, edgeSource, edgeDestination, startVertex, endVertex;
 	
 	public Graph(String name) {
 		this.name = name;
@@ -149,13 +150,13 @@ public class Graph {
 		this.addEdge("d", "3", 10);
 		
 		for(Vertex vertex: this.getVertexes()) {
-			int x = r.nextInt(Gdx.graphics.getWidth() - 40) + 20;
-			int y = r.nextInt(Gdx.graphics.getHeight() - 80) + 60;
+			int x = r.nextInt(Gdx.graphics.getWidth() - 250) + 225;
+			int y = r.nextInt(Gdx.graphics.getHeight() - 50) + 25;
 			
 			
 			while(coordinatesCollide(x, y, vertex)) {
-				x = r.nextInt(Gdx.graphics.getWidth() - 40) + 20;
-				y = r.nextInt(Gdx.graphics.getHeight() - 80) + 60;
+				x = r.nextInt(Gdx.graphics.getWidth() - 250) + 225;
+				y = r.nextInt(Gdx.graphics.getHeight() - 50) + 25;
 			}
 
 			vertex.setX(x);
@@ -165,17 +166,17 @@ public class Graph {
 		}
 	
 	public boolean coordinatesCollide(int x, int y, Vertex currentVertex) {
-		boolean collided = false;
-		for(Vertex vertex: this.getVertexes()) {
-			if(vertex != currentVertex & vertex.hasCoords()) {
-				int dx = vertex.getX() - x;
-				int dy = vertex.getY() - y;
-				int distance = (int) Math.hypot(dx, dy);
-				if(distance < 75) {
-					collided = true;
-				}}}
-		//return false;
-		return collided;
+		if(x > UIMenus.getMenus().get(0).getDimensions()[0] + 50) {
+			for(Vertex vertex: this.getVertexes()) {
+				if(vertex != currentVertex & vertex.hasCoords()) {
+					int dx = vertex.getX() - x;
+					int dy = vertex.getY() - y;
+					int distance = (int) Math.hypot(dx, dy);
+					if(distance < 75) {
+						return true;
+					}}}}
+		
+		return false;
 	}
 	
 	public boolean addVertex(String name) {
@@ -192,25 +193,27 @@ public class Graph {
 	}
 	
 	public void addVertex(int x, int y) {
-		// Name building
-		String alphabet = "abcdefghijklmnopqrstuvwxyz";
-		StringBuilder sb = new StringBuilder(3);
-		for(int j = 0; j < 3; j++) {
-			int index = (int)(alphabet.length() * Math.random());
-			sb.append(alphabet.charAt(index));}
-		String newName = sb.toString();
-		
-		// Creating Vertex
-		boolean vertexCreated = addVertex(newName);
-		if(vertexCreated) {
-			Vertex newVertex = findVertex(newName);
-			newVertex.setPosition(x, y);
-			newVertex.setRadius(VERTEX_RADIUS);
-		}
-		
-		// Error handling
-		else System.out.println("Vertex already exists, try clicking again.");
-		}
+		if(x > UIMenus.getMenus().get(0).getDimensions()[0] + 50) {
+			// Name building
+			String alphabet = "abcdefghijklmnopqrstuvwxyz";
+			StringBuilder sb = new StringBuilder(3);
+			for(int j = 0; j < 3; j++) {
+				int index = (int)(alphabet.length() * Math.random());
+				sb.append(alphabet.charAt(index));}
+			String newName = sb.toString();
+			
+			// Creating Vertex
+			boolean vertexCreated = addVertex(newName);
+			if(vertexCreated) {
+				Vertex newVertex = findVertex(newName);
+				newVertex.setPosition(x, y);
+				newVertex.setRadius(VERTEX_RADIUS);
+			}
+			
+			// Error handling
+			else System.out.println("Vertex already exists, try clicking again.");
+			}
+	}
 	
 	public void removeVertex(Vertex vertex) {
 		ArrayList<Edge> edgesToDelete = new ArrayList<>();
@@ -384,6 +387,7 @@ public class Graph {
 					edgeSource = edgeDestination = null;
 				}}
 			
+			// Highlight Neighbours method
 			else if(buttonToggles[4]) {
 				if(vertex.checkClicked()) {
 					for(Vertex i: vertex.getNeighbours()) {
@@ -393,6 +397,7 @@ public class Graph {
 				}
 			}
 			
+			// Print Vertex Info method
 			else if(buttonToggles[5]) { //Print info
 				if(vertex.checkClicked()) {
 					System.out.println("---------------");
@@ -402,15 +407,15 @@ public class Graph {
 					System.out.println("--- Edges ---");
 					for(Edge edge: vertex.getEdges()) {
 						System.out.println(edge);
-					}
-				}
-			}
+					}}}
 			
+			// Reset Colours method
 			else if(buttonToggles[6]) {
 				vertex.setColor(Color.FIREBRICK);
 				resetColorsButton.setToggled(false); //Make click button (not toggle)
 			}
 			
+			// Print All Neighbours method
 			else if(buttonToggles[7]) {
 				HashMap<Vertex, ArrayList<Vertex>> neighbourMap = getAllNeighbours();
 				neighbourMap.entrySet().forEach(entry ->{
@@ -422,6 +427,28 @@ public class Graph {
 				});
 				getAllNeighboursButton.setToggled(false); //Make click button (not toggle)
 			}
+		
+			// Dijkstra's Algorithm method
+			else if(buttonToggles[8]) {
+				if(vertex.checkClicked()) {
+					if(startVertex == null) { startVertex = vertex; vertex.setColor(Color.PURPLE);}
+					else if(endVertex == null) {
+						endVertex = vertex; vertex.setColor(Color.PURPLE);
+						}
+					}
+				if(startVertex != null & endVertex != null) {
+					DijkstrasAlgorithm.apply(this, startVertex, endVertex);
+					endVertex.setColor(Color.FIREBRICK);
+					startVertex.setColor(Color.FIREBRICK);
+					endVertex = startVertex = null;
+				}
+			}
+			
+			// Kruskal's Algorithm method
+			else if(buttonToggles[9]) {
+				
+			}
+		
 		}
 
 		// Removes vertices as added above.

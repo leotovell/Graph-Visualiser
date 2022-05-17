@@ -3,6 +3,8 @@ package com.leo.algorithms;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
+import com.leo.algorithms.Assets.Resources;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 
 public class Edge {
 	
@@ -21,10 +23,20 @@ public class Edge {
 		sr.rectLine(this.start.getX(), this.start.getY(), this.end.getX(), this.end.getY(), 5);
 		sr.end();
 		
+		GlyphLayout text = new GlyphLayout(Resources.font, Integer.toString(this.weight));
+		
+		Resources.batch.begin();
+		Color colorBefore = Resources.font.getColor();
+		Resources.font.setColor(Color.WHITE);
+		Resources.font.draw(Resources.batch, text, getMidpoint()[0] - (text.width / 2), getMidpoint()[1] - 10);
+		Resources.batch.end();
+		
+		Resources.font.setColor(colorBefore);
+		
 		
 	}
 	
-	public int[] getMidpoint(Vertex start, Vertex finish) {
+	public int[] getMidpoint() {
 		int x = (start.getX() + end.getX()) / 2;
 		int y = (start.getY() + end.getY()) / 2;
 		return new int[] {x, y};

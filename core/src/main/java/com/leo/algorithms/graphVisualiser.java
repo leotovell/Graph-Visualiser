@@ -28,7 +28,6 @@ public class graphVisualiser extends ApplicationAdapter {
 	private TextField weightInputField;
 	public Resources resources;
 
-
 	public Graph createGraph() {
 		graph = new Graph("My Graph");
 		return graph;
@@ -37,7 +36,7 @@ public class graphVisualiser extends ApplicationAdapter {
 	@Override
 	public void create() {
 		
-		//Gdx.graphics.setFullscreenMode(Gdx.graphics.getDisplayMode());
+		Gdx.graphics.setFullscreenMode(Gdx.graphics.getDisplayMode());
 
 		graph = createGraph();
 		Resources.setGraph(graph);
@@ -83,6 +82,7 @@ public class graphVisualiser extends ApplicationAdapter {
 		graph.draw();
 		
 		Resources.getBatch().begin();
+		Resources.font.setColor(Color.WHITE);
 		Resources.getFont().draw(Resources.getBatch(), "FPS: " + Gdx.graphics.getFramesPerSecond(), Gdx.graphics.getWidth() - 70, Gdx.graphics.getHeight() - 15);
 		Resources.getBatch().end();
 		

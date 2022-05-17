@@ -13,12 +13,6 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.leo.algorithms.Assets.Resources;
 
-/*
- * TODO: 
- * 
- * 
- */
-
 public class Vertex {
 
 	private String name = null;
@@ -91,6 +85,7 @@ public class Vertex {
 		float fontX = (this.x - (text.width /2));
 		float fontY = (this.y + (text.height /2));
 
+		font.setColor(Color.WHITE);
 		batch.begin();
 		font.draw(batch, text, fontX, fontY);
 		batch.end();
@@ -104,7 +99,7 @@ public class Vertex {
 		int dy = (int) (mouseY - this.y);
 		distance = (int) (Math.hypot(dx,  dy));
 
-		if(Gdx.input.isButtonPressed(Buttons.LEFT) & (distance < this.radius)) {
+		if(Gdx.input.isButtonPressed(Buttons.LEFT) & (distance < this.radius) & ((x >= 225) || (Gdx.input.getDeltaX() > 0))) {
 			this.setX(x + Gdx.input.getDeltaX());
 			this.setY(y - Gdx.input.getDeltaY());
 		}}

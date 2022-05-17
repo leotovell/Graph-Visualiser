@@ -6,6 +6,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
@@ -20,12 +21,15 @@ public class LExpandableMenu {
 	Color backgroundColor, tabColor;
 	
 	int buttonGap = 10; //px
+	float animationSpan = 0.002f; //ms
+	float timeSinceLastAnimation;
 	
 	String title = "Default";
 	
 	boolean moving = false;
 	boolean expanded = false;
 	boolean direction; // FALSE: UP | TRUE: DOWN
+	BitmapFont font;
 	
 	ArrayList<LButton> elementList = new ArrayList<>();
 
@@ -51,10 +55,13 @@ public class LExpandableMenu {
 		
 		this.backgroundColor = color;
 		this.tabColor = color;
+		
+		this.font = Resources.font;
+		
 	}
 	
 	public void draw(ShapeRenderer sr, Batch batch) {
-	
+		
 		Resources.sr.begin(ShapeType.Filled);
 		Resources.sr.setColor(backgroundColor);
 		Resources.sr.rect(tabX, tabY, tabWidth, tabHeight);
@@ -71,12 +78,14 @@ public class LExpandableMenu {
 		float titleX = (tabX + (tabWidth - titleLayout.width) /2);
 		float titleY = (tabY + (tabHeight + titleLayout.height) /2);
 		
+		font.setColor(Color.WHITE);
 		batch.begin();
-		Resources.font.draw(batch, titleLayout, titleX, titleY);
+		font.draw(batch, titleLayout, titleX, titleY);
 		batch.end();
 		
 		if(this.expanded && !(moving)) {
 			for(LButton button: elementList) {
+				button.font.setColor(button.fontColor);
 				button.draw(sr, batch, Resources.graph.getEditButtons());
 			}
 		}
@@ -119,14 +128,15 @@ public class LExpandableMenu {
 		if(mouseX > tabLeftSide && mouseX < tabRightSide && mouseY < tabBottom && mouseY > tabTop && Gdx.input.isButtonJustPressed(Buttons.LEFT)) return true;
 		return false;
 	}
-	
+
 	public void animate() {
-		if(direction) {
-			height ++;
-		}
-		else height--;
-	};
-	
+		timeSinceLastAnimation = timeSinceLastAnimation + Gdx.graphics.getDeltaTime();
+		if(timeSinceLastAnimation >= animationSpan) {
+			timeSinceLastAnimation = 0;
+			if(direction) height++;
+			if(!(direction)) height --;
+		}}
+
 	public void addElements(LButton... elementsToAdd) {
 		for(LButton element: elementsToAdd) {
 			elementList.add(element);
