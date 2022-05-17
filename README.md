@@ -7,8 +7,7 @@ I eventually want to make this a graphing tool with different algorithms and so.
 ---------------
 
 #### To-do
-- Stop the graph vertices overlaying UI.
-- Getting weight input on new edges + displaying it next to edges.
+- More Readable Weight
 - Kruskals Algorithm (MST).
 - Dijsktras Algorithm (Shortest Path).
 - Dark and Light mode for picky users.
