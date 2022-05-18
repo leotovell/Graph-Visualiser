@@ -9,7 +9,6 @@ I eventually want to make this a graphing tool with different algorithms and so.
 #### To-do
 - More Readable Weight
 - Kruskals Algorithm (MST).
-- Dijsktras Algorithm (Shortest Path).
 - Dark and Light mode for picky users.
 	
 #### Current Version
