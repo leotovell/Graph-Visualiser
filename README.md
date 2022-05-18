@@ -12,6 +12,14 @@ I eventually want to make this a graphing tool with different algorithms and so.
 - Dark and Light mode for picky users.
 	
 #### Current Version
-Finished drop-down for UI. They automatically reposition and resize depending on contents.
 
-![alt text](https://github.com/LeoTovell/Graph-Visualiser/blob/main/pic/160522.png)
+Added Dijkstra's Algorithm
+
+###### Example 1
+![alt text](https://github.com/LeoTovell/Graph-Visualiser/blob/main/pic/18052201.png)
+
+###### Example 2
+![alt text](https://github.com/LeoTovell/Graph-Visualiser/blob/main/pic/18052202.png)
+
+###### Example 3
+![alt text](https://github.com/LeoTovell/Graph-Visualiser/blob/main/pic/18052203.png)
