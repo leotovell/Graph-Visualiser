@@ -62,6 +62,10 @@ public class LExpandableMenu {
 	
 	public void draw(ShapeRenderer sr, Batch batch) {
 		
+		if(elementList.isEmpty()) {
+			this.originalHeight = 100;
+		}
+		
 		Resources.sr.begin(ShapeType.Filled);
 		Resources.sr.setColor(backgroundColor);
 		Resources.sr.rect(tabX, tabY, tabWidth, tabHeight);
@@ -88,8 +92,15 @@ public class LExpandableMenu {
 				button.font.setColor(button.fontColor);
 				button.draw(sr, batch, Resources.graph.getEditButtons());
 			}
-		}
-	}
+			if(elementList.isEmpty()) {
+				font.setColor(Color.RED);
+				GlyphLayout noButtons = new GlyphLayout(font, "No Buttons");
+				float noButtonsX = (this.x + (this.width - noButtons.width) /2);
+				float noButtonsY = (this.y - tabHeight - (this.originalHeight/5));
+				batch.begin();
+				font.draw(batch, noButtons, noButtonsX, noButtonsY);
+				batch.end();
+			}}}
 	
 	public void update() {
 		

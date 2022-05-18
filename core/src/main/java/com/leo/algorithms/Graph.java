@@ -2,6 +2,7 @@ package com.leo.algorithms;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Random;
 import com.badlogic.gdx.Gdx;
@@ -31,17 +32,20 @@ public class Graph {
 	addEdgeButton, 
 	removeVertexButton, 
 	removeEdgeButton, 
-	functionButton, 
+	highlightNeighboursButton, 
 	vertexInfoButton, 
 	resetColorsButton, 
 	getAllNeighboursButton,
 	kruskalsAlgorithmButton,
-	DijkstrasAlgorithmButton;
+	DijkstrasAlgorithmButton,
+	loadGraphButton,
+	saveGraphButton;
 	
 	private LExpandableMenu
 	functionButtonMenu,
 	debugButtonMenu,
-	algorithmButtonMenu;
+	algorithmButtonMenu,
+	saveLoadMenu;
 	
 	private ArrayList<LButton> editButtons;
 	private LMenuGroup UIMenus;
@@ -78,6 +82,9 @@ public class Graph {
 		algorithmButtonMenu = new LExpandableMenu(0, Gdx.graphics.getHeight() - 600, 200, 250, Color.BLUE);
 		algorithmButtonMenu.setTitle("Algorithms");
 		
+		saveLoadMenu = new LExpandableMenu(0, 0, 200, 250, Color.BLUE);
+		saveLoadMenu.setTitle("Save/Load Graph");
+		
 		addVertexButton = new LButton("Add Vertex", Gdx.graphics.getWidth()-520, 10, 120, 30, Color.WHITE, ShapeType.Filled);
 		addVertexButton.setClickedColor(Color.GREEN);
 
@@ -90,44 +97,43 @@ public class Graph {
 		removeEdgeButton = new LButton("Remove Edge", Gdx.graphics.getWidth()-130, 10, 120, 30, Color.WHITE, ShapeType.Filled);
 		removeEdgeButton.setClickedColor(Color.RED);
 		
-		functionButton = new LButton("Highlight Neighbours", Gdx.graphics.getWidth()-650, 10, 150, 30, Color.WHITE, ShapeType.Filled);
-		functionButton.setClickedColor(Color.PURPLE);
+		highlightNeighboursButton = new LButton("Highlight Neighbours", Gdx.graphics.getWidth()-650, 10, 150, 30, Color.WHITE, ShapeType.Filled);
+		highlightNeighboursButton.setClickedColor(Color.PURPLE);
 		
 		vertexInfoButton = new LButton("Vertex Info", Gdx.graphics.getWidth()-780, 10, 120, 30, Color.WHITE, ShapeType.Filled);
-		vertexInfoButton.setClickedColor(Color.BLUE);
+		vertexInfoButton.setClickedColor(Color.PURPLE);
 		
 		resetColorsButton = new LButton("Reset Colours", Gdx.graphics.getWidth()-910, 10, 120, 30, Color.WHITE, ShapeType.Filled);
-		resetColorsButton.setClickedColor(Color.BLUE);
 		
 		getAllNeighboursButton = new LButton("Print All Neighbours", Gdx.graphics.getWidth()-1040, 10, 120, 30, Color.WHITE, ShapeType.Filled);
-		getAllNeighboursButton.setClickedColor(Color.BLUE);
 		
 		kruskalsAlgorithmButton = new LButton("'Kruskals'", 0, 0, 120, 30, Color.WHITE, ShapeType.Filled);
-		kruskalsAlgorithmButton.setClickedColor(Color.BLUE);
+		kruskalsAlgorithmButton.setClickedColor(Color.PINK);
 		
 		DijkstrasAlgorithmButton = new LButton("'Dijkstras'", 0, 0, 120, 30, Color.WHITE, ShapeType.Filled);
-		DijkstrasAlgorithmButton.setClickedColor(Color.BLUE);
+		DijkstrasAlgorithmButton.setClickedColor(Color.PINK);
 
 		functionButtonMenu.addElements(addVertexButton, addEdgeButton, removeVertexButton, removeEdgeButton);
-		debugButtonMenu.addElements(functionButton, vertexInfoButton, resetColorsButton, getAllNeighboursButton);
-		algorithmButtonMenu.addElements(kruskalsAlgorithmButton, DijkstrasAlgorithmButton);
+		debugButtonMenu.addElements(highlightNeighboursButton, vertexInfoButton, resetColorsButton, getAllNeighboursButton);
+		algorithmButtonMenu.addElements(DijkstrasAlgorithmButton, kruskalsAlgorithmButton);
 		
 		editButtons = new ArrayList<>();
 		editButtons.add(addVertexButton);
 		editButtons.add(addEdgeButton);
 		editButtons.add(removeVertexButton);
 		editButtons.add(removeEdgeButton);
-		editButtons.add(functionButton);
+		editButtons.add(highlightNeighboursButton);
 		editButtons.add(vertexInfoButton);
 		editButtons.add(resetColorsButton);
 		editButtons.add(getAllNeighboursButton);
-		editButtons.add(kruskalsAlgorithmButton);
 		editButtons.add(DijkstrasAlgorithmButton);
+		editButtons.add(kruskalsAlgorithmButton);
 		
 		UIMenus = new LMenuGroup();
 		UIMenus.addMenu(functionButtonMenu);
 		UIMenus.addMenu(algorithmButtonMenu);
 		UIMenus.addMenu(debugButtonMenu);
+		UIMenus.addMenu(saveLoadMenu);
 	}
 	
 	public void createDefaultVertices() {
@@ -140,20 +146,19 @@ public class Graph {
 			this.addVertex(String.valueOf(i));
 		}
 		
-		this.addEdge("a", "b", 10);
-		this.addEdge("b", "c", 9);
-		this.addEdge("c", "d", 8);
-		this.addEdge("a", "3", 12);
-		this.addEdge("c", "2", 10);
-		this.addEdge("c", "1", 10);
-		this.addEdge("3", "4", 10);
-		this.addEdge("d", "3", 10);
+		this.addEdge("a", "b", r.nextInt(12) + 1); // Minimum 1 - 13 Maximum
+		this.addEdge("b", "c", r.nextInt(12) + 1);
+		this.addEdge("c", "d", r.nextInt(12) + 1);
+		this.addEdge("a", "3", r.nextInt(12) + 1);
+		this.addEdge("c", "2", r.nextInt(12) + 1);
+		this.addEdge("c", "1", r.nextInt(12) + 1);
+		this.addEdge("3", "4", r.nextInt(12) + 1);
+		this.addEdge("d", "3", r.nextInt(12) + 1);
 		
 		for(Vertex vertex: this.getVertexes()) {
 			int x = r.nextInt(Gdx.graphics.getWidth() - 250) + 225;
 			int y = r.nextInt(Gdx.graphics.getHeight() - 50) + 25;
-			
-			
+						
 			while(coordinatesCollide(x, y, vertex)) {
 				x = r.nextInt(Gdx.graphics.getWidth() - 250) + 225;
 				y = r.nextInt(Gdx.graphics.getHeight() - 50) + 25;
@@ -275,6 +280,17 @@ public class Graph {
 		//Try both - quick get around to doing validation in non-directional
 	}
 	
+	public Edge getEdge(Vertex start, Vertex end) {
+		for(Vertex vertex: this.getVertexes()) {
+			for(Edge edge: vertex.getEdges()) {
+				if(edge.getStartVertex() == start && edge.getEndVertex() == end || edge.getStartVertex() == end && edge.getEndVertex() == start) {
+					return edge;
+				}
+			}
+		}
+		return null;
+	}
+	
 	public void clearGraph() {
 		// Removes all vertexes and therefore edges, clearing the graph
 		this.getVertexes().clear();
@@ -324,9 +340,12 @@ public class Graph {
 		UIMenus.render(Resources.sr, Resources.batch);
 		
 		// Draws the Vertices
+		Color previousColor = Resources.font.getColor();
+		Resources.font.setColor(Color.WHITE);
 		for(Vertex vertex: this.getVertexes()) {
 			vertex.draw(sr, font, batch);
 		}
+		Resources.font.setColor(previousColor);
 	}
 	
 	public void update() {
@@ -412,6 +431,7 @@ public class Graph {
 			// Reset Colours method
 			else if(buttonToggles[6]) {
 				vertex.setColor(Color.FIREBRICK);
+				for(Edge edge: vertex.getEdges()) edge.setColor(edge.defaultColor);
 				resetColorsButton.setToggled(false); //Make click button (not toggle)
 			}
 			
@@ -436,13 +456,19 @@ public class Graph {
 						endVertex = vertex; vertex.setColor(Color.PURPLE);
 						}
 					}
-				if(startVertex != null & endVertex != null) {
-					DijkstrasAlgorithm.apply(this, startVertex, endVertex);
+				
+				// Execute Dijkstra's.
+				if(startVertex != null & endVertex != null) {					
+					ArrayList<Vertex> path = DijkstrasAlgorithm.apply(this, startVertex, endVertex);
+					for(int i = 0; i < path.size(); i++) {
+						if(i+1 < path.size()) {
+							this.getEdge(path.get(i), path.get(i + 1)).setColor(Color.GREEN);
+						}}
+
 					endVertex.setColor(Color.FIREBRICK);
 					startVertex.setColor(Color.FIREBRICK);
 					endVertex = startVertex = null;
-				}
-			}
+				}}
 			
 			// Kruskal's Algorithm method
 			else if(buttonToggles[9]) {
@@ -452,7 +478,8 @@ public class Graph {
 		}
 
 		// Removes vertices as added above.
-		if(toRemove != null) this.removeVertex(toRemove);;	
+		if(toRemove != null) this.removeVertex(toRemove);
+
 	}
 	
 	// Getters/Setters

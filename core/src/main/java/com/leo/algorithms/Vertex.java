@@ -85,7 +85,7 @@ public class Vertex {
 		float fontX = (this.x - (text.width /2));
 		float fontY = (this.y + (text.height /2));
 
-		font.setColor(Color.WHITE);
+
 		batch.begin();
 		font.draw(batch, text, fontX, fontY);
 		batch.end();

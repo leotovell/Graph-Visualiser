@@ -36,7 +36,7 @@ public class graphVisualiser extends ApplicationAdapter {
 	@Override
 	public void create() {
 		
-		Gdx.graphics.setFullscreenMode(Gdx.graphics.getDisplayMode());
+//		Gdx.graphics.setFullscreenMode(Gdx.graphics.getDisplayMode());
 
 		graph = createGraph();
 		Resources.setGraph(graph);

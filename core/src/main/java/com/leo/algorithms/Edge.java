@@ -9,17 +9,20 @@ import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 public class Edge {
 	
 	private Vertex start, end;
+	private Color color;
+	public Color defaultColor = Color.WHITE;
 	private Integer weight;
 	
 	public Edge(Vertex start, Vertex end, Integer weight) {
 		this.start = start;
 		this.end = end;
 		this.weight = weight;
+		this.color = defaultColor;
 	}
 	  
 	public void draw(ShapeRenderer sr) {
 		sr.begin(ShapeType.Filled);
-		sr.setColor(Color.WHITE);
+		sr.setColor(this.color);
 		sr.rectLine(this.start.getX(), this.start.getY(), this.end.getX(), this.end.getY(), 5);
 		sr.end();
 		
@@ -61,4 +64,7 @@ public class Edge {
 		return this.weight;
 	}
 	
+	public void setColor(Color color) {
+		this.color = color;
+	}
 }
