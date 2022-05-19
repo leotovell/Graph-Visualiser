@@ -14,6 +14,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.leo.algorithms.Algorithm.DijkstrasAlgorithm;
+import com.leo.algorithms.Algorithm.KruskalsAlgorithm;
 import com.leo.algorithms.Assets.LButton;
 import com.leo.algorithms.Assets.LExpandableMenu;
 import com.leo.algorithms.Assets.LMenuGroup;
@@ -39,7 +40,8 @@ public class Graph {
 	kruskalsAlgorithmButton,
 	DijkstrasAlgorithmButton,
 	loadGraphButton,
-	saveGraphButton;
+	saveGraphButton,
+	toggleFullscreenButton;
 	
 	private LExpandableMenu
 	functionButtonMenu,
@@ -52,8 +54,9 @@ public class Graph {
 	private BitmapFont font;
 	private int VERTEX_RADIUS;
 	private Random r;
-	private boolean[] buttonToggles = {false, false, false, false, false, false, false, false, false, false};
+	private boolean[] buttonToggles = {false, false, false, false, false, false, false, false, false, false, false};
 	private Vertex addSource, addDestination, edgeSource, edgeDestination, startVertex, endVertex;
+	private boolean fullScreen = true;
 	
 	public Graph(String name) {
 		this.name = name;
@@ -112,9 +115,11 @@ public class Graph {
 		
 		DijkstrasAlgorithmButton = new LButton("'Dijkstras'", 0, 0, 120, 30, Color.WHITE, ShapeType.Filled);
 		DijkstrasAlgorithmButton.setClickedColor(Color.PINK);
-
+		
+		toggleFullscreenButton = new LButton("Toggle Fullscreen", 0, 0, 120, 30, Color.WHITE, ShapeType.Filled);
+		
 		functionButtonMenu.addElements(addVertexButton, addEdgeButton, removeVertexButton, removeEdgeButton);
-		debugButtonMenu.addElements(highlightNeighboursButton, vertexInfoButton, resetColorsButton, getAllNeighboursButton);
+		debugButtonMenu.addElements(highlightNeighboursButton, vertexInfoButton, resetColorsButton, getAllNeighboursButton, toggleFullscreenButton);
 		algorithmButtonMenu.addElements(DijkstrasAlgorithmButton, kruskalsAlgorithmButton);
 		
 		editButtons = new ArrayList<>();
@@ -128,6 +133,7 @@ public class Graph {
 		editButtons.add(getAllNeighboursButton);
 		editButtons.add(DijkstrasAlgorithmButton);
 		editButtons.add(kruskalsAlgorithmButton);
+		editButtons.add(toggleFullscreenButton);
 		
 		UIMenus = new LMenuGroup();
 		UIMenus.addMenu(functionButtonMenu);
@@ -197,7 +203,7 @@ public class Graph {
 		return false;
 	}
 	
-	public void addVertex(int x, int y) {
+	public Vertex addVertex(int x, int y) {
 		if(x > UIMenus.getMenus().get(0).getDimensions()[0] + 50) {
 			// Name building
 			String alphabet = "abcdefghijklmnopqrstuvwxyz";
@@ -213,11 +219,13 @@ public class Graph {
 				Vertex newVertex = findVertex(newName);
 				newVertex.setPosition(x, y);
 				newVertex.setRadius(VERTEX_RADIUS);
+				return newVertex;
 			}
 			
 			// Error handling
 			else System.out.println("Vertex already exists, try clicking again.");
 			}
+		return null;
 	}
 	
 	public void removeVertex(Vertex vertex) {
@@ -472,7 +480,18 @@ public class Graph {
 			
 			// Kruskal's Algorithm method
 			else if(buttonToggles[9]) {
-				
+				KruskalsAlgorithm.apply(this);
+				kruskalsAlgorithmButton.setToggled(false);
+				buttonToggles[9] = false;
+			}
+			
+			else if(buttonToggles[10]) {
+				if(Gdx.graphics.isFullscreen()) {
+					Gdx.graphics.setWindowedMode(1280, 720);
+				}
+				else Gdx.graphics.setFullscreenMode(Gdx.graphics.getDisplayMode());
+//				toggleFullscreenButton.setToggled(false);
+//				buttonToggles[10] = false;
 			}
 		
 		}

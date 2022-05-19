@@ -27,7 +27,8 @@ public class graphVisualiser extends ApplicationAdapter {
 	private ImageButton retryButton;
 	private TextField weightInputField;
 	public Resources resources;
-
+	public boolean fullScreen = true;
+	
 	public Graph createGraph() {
 		graph = new Graph("My Graph");
 		return graph;
@@ -36,7 +37,7 @@ public class graphVisualiser extends ApplicationAdapter {
 	@Override
 	public void create() {
 		
-//		Gdx.graphics.setFullscreenMode(Gdx.graphics.getDisplayMode());
+		Gdx.graphics.setFullscreenMode(Gdx.graphics.getDisplayMode());
 
 		graph = createGraph();
 		Resources.setGraph(graph);

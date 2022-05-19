@@ -110,6 +110,10 @@ public class Vertex {
 		return clicked;
 	}
 	
+	public void clearEdges() {
+		this.edgeList.clear();
+	}
+	
 	public void setColor(Color color) {
 		this.color = color;
 	}
@@ -153,5 +157,9 @@ public class Vertex {
 	
 	public Color getColor() {
 		return this.color;
+	}
+	
+	public void setName(String name) {
+		this.name = name;
 	}
 }
